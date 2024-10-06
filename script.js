@@ -197,6 +197,7 @@ function addItemToDOM(ulElement, item, sectionName) {
         </div>
         <div class="button-group">
             <input type="number" min="0" placeholder="Qtd" value="${item.purchased}" class="purchased-input" onchange="updatePurchased(event, '${sectionName}', '${item.uniqueId}')">
+            <button class="edit-button" onclick="editItem(event, '${sectionName}', '${item.uniqueId}')" title="Editar">✎</button>
             <button class="mark-button" onclick="toggleRiscado(event, '${item.uniqueId}')" title="Marcar">✓</button>
             <button class="unmark-button" onclick="toggleRiscado(event, '${item.uniqueId}')" style="display: none;" title="Desmarcar">✗</button>
             <button class="discard-button" onclick="discardItem(event, '${sectionName}', '${item.uniqueId}')" title="Descartar">🗑️</button>
@@ -213,6 +214,67 @@ function addItemToDOM(ulElement, item, sectionName) {
         unmarkButton.style.display = 'inline-block';
     }
 }
+
+function editItem(event, sectionName, uniqueId) {
+    const listItem = event.target.closest('li');
+    const itemIndex = sections.findIndex(section => section.name === sectionName);
+    if (itemIndex !== -1) {
+        const item = sections[itemIndex].items.find(item => item.uniqueId === uniqueId);
+        if (item) {
+            // Cria um formulário para editar o item
+            const editForm = document.createElement('div');
+            editForm.classList.add('edit-form');
+            editForm.innerHTML = `
+                <input type="text" placeholder="Nome" value="${item.name}" class="edit-name">
+                <input type="text" placeholder="Loja" value="${item.store}" class="edit-store">
+                <input type="number" min="0" placeholder="Estoque" value="${item.stock}" class="edit-stock">
+                <input type="number" min="0" placeholder="Pedido" value="${item.requested}" class="edit-requested">
+                <div class="edit-form-buttons">
+                    <button onclick="saveEditItem(event, '${sectionName}', '${uniqueId}')">Salvar</button>
+                    <button onclick="cancelEditItem(event)">Cancelar</button>
+                </div>
+            `;
+            // Substitui o conteúdo do item pelo formulário
+            listItem.innerHTML = '';
+            listItem.appendChild(editForm);
+        }
+    }
+}
+
+function saveEditItem(event, sectionName, uniqueId) {
+    const listItem = event.target.closest('li');
+    const nameInput = listItem.querySelector('.edit-name');
+    const storeInput = listItem.querySelector('.edit-store');
+    const stockInput = listItem.querySelector('.edit-stock');
+    const requestedInput = listItem.querySelector('.edit-requested');
+
+    const updatedName = nameInput.value.trim();
+    const updatedStore = storeInput.value.trim();
+    const updatedStock = stockInput.value.trim();
+    const updatedRequested = requestedInput.value.trim();
+
+    const sectionIndex = sections.findIndex(section => section.name === sectionName);
+    if (sectionIndex !== -1) {
+        const itemIndex = sections[sectionIndex].items.findIndex(item => item.uniqueId === uniqueId);
+        if (itemIndex !== -1) {
+            sections[sectionIndex].items[itemIndex].name = updatedName;
+            sections[sectionIndex].items[itemIndex].store = updatedStore;
+            sections[sectionIndex].items[itemIndex].stock = updatedStock;
+            sections[sectionIndex].items[itemIndex].requested = updatedRequested;
+            saveState();
+            // Recria o item na DOM
+            const ulElement = listItem.parentElement;
+            ulElement.removeChild(listItem);
+            addItemToDOM(ulElement, sections[sectionIndex].items[itemIndex], sectionName);
+        }
+    }
+}
+
+function cancelEditItem(event) {
+    // Recarrega o estado atual da seção para desfazer a edição
+    restoreState();
+}
+
 
 function initializeSortable(ulElement) {
     new Sortable(ulElement, {

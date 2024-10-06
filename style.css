@@ -6,7 +6,7 @@ body {
     background-color: #1e1e1e;
     color: #fff;
     margin: 0;
-    padding: 5px; /* Reduzido para aproximar o conteúdo das bordas */
+    padding: 5px;
 }
 
 h2 {
@@ -15,7 +15,7 @@ h2 {
     font-size: 24px;
     text-transform: uppercase;
     border-bottom: 2px solid #00e676;
-    margin: 0; /* Removido margens */
+    margin: 0;
 }
 
 ul {
@@ -104,7 +104,7 @@ li:hover::before {
 .button-group {
     display: flex;
     align-items: center;
-    gap: 5px; /* Aumenta o espaçamento entre os botões */
+    gap: 8px;
 }
 
 .button-group input {
@@ -113,15 +113,12 @@ li:hover::before {
     width: 35px;
 }
 
-.button-group .unmark-button {
-    font-size: 8px;
-    padding: 3px;
-}
-
 .mark-button,
-.discard-button {
-    font-size: 14px; /* Aumenta o tamanho da fonte */
-    padding: 6px;    /* Aumenta o padding */
+.unmark-button,
+.discard-button,
+.edit-button {
+    font-size: 20px;
+    padding: 8px;
 }
 
 button {
@@ -248,10 +245,49 @@ input[type="number"] {
     background-color: #00c853;
 }
 
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.edit-form input {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #00e676;
+    background-color: #2a2a2a;
+    color: #fff;
+    font-size: 12px;
+}
+
+.edit-form-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.edit-form button {
+    background-color: #00e676;
+    border: none;
+    color: #1e1e1e;
+    padding: 5px;
+    font-size: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    flex: 1;
+}
+
+.edit-form button:hover {
+    background-color: #00c853;
+}
+
+.edit-form button:active {
+    transform: scale(0.95);
+}
+
 /* Responsividade */
 
 @media (max-width: 768px) {
-    /* Ajustes específicos para dispositivos móveis */
     body {
         padding: 5px;
     }
@@ -274,20 +310,18 @@ input[type="number"] {
         margin-right: 2px;
     }
 
-    .button-group input,
-    .button-group .unmark-button {
+    .button-group input {
         font-size: 8px;
         padding: 2px;
-    }
-
-    .button-group input {
         width: 30px;
     }
 
     .mark-button,
-    .discard-button {
-        font-size: 16px; /* Mantém os botões maiores em dispositivos móveis */
-        padding: 7px;
+    .unmark-button,
+    .discard-button,
+    .edit-button {
+        font-size: 24px;
+        padding: 10px;
     }
 
     .add-item input,
@@ -308,5 +342,14 @@ input[type="number"] {
     .saved-card strong,
     .saved-card span {
         font-size: 10px;
+    }
+
+    .edit-form input {
+        font-size: 10px;
+    }
+
+    .edit-form button {
+        font-size: 10px;
+        padding: 5px;
     }
 }
