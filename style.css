@@ -1,6 +1,6 @@
 /* style.css */
 
-/* Seu CSS permanece o mesmo */
+/* Estilos globais */
 body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
@@ -44,8 +44,7 @@ li {
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
     cursor: grab;
     transition: transform 0.2s ease, background-color 0.2s ease;
     touch-action: pan-y;
@@ -54,7 +53,7 @@ li {
 
 li:active {
     cursor: grabbing;
-    transform: scale(1.05);
+    transform: scale(1.02);
     background-color: #e0f7fa;
 }
 
@@ -63,6 +62,17 @@ li.riscado {
     color: gray;
 }
 
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.item-details {
+    margin-top: 5px;
+}
+
+/* Estilos para botões */
 button {
     background-color: #007f82;
     border: none;
@@ -72,10 +82,55 @@ button {
     font-size: 14px;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
     background-color: #005f5f;
+}
+
+/* Agrupamento dos botões principais */
+.button-group-main {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.button-group-main button {
+    flex: 1;
+}
+
+/* Estilos para o botão de mostrar/ocultar salvamentos online */
+.toggle-saves-btn {
+    background-color: #ffa500;
+    color: #fff;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 30px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-saves-btn .arrow {
+    margin-left: 10px;
+    transition: transform 0.3s ease;
+}
+
+.toggle-saves-btn.active .arrow {
+    transform: rotate(180deg);
+}
+
+.toggle-saves-btn:hover {
+    background-color: #ff8c00;
+    transform: scale(1.05);
+}
+
+.toggle-saves-btn:active {
+    background-color: #ff7f00;
+    transform: scale(0.95);
 }
 
 input[type="text"], input[type="number"] {
@@ -120,15 +175,18 @@ input[type="number"] {
 }
 
 .saved-cards {
-    margin-top: 30px;
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
 }
 
 .saved-card {
     background-color: #ffffff;
     padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 5px;
+    border-radius: 10px;
     border: 1px solid #007f82;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .saved-card-header {
@@ -137,7 +195,36 @@ input[type="number"] {
     align-items: center;
 }
 
+.saved-card strong {
+    font-size: 16px;
+}
+
+.saved-card button {
+    padding: 5px 10px;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.saved-card-content {
+    margin-top: 10px;
+}
+
+.saved-card-content ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+/* Responsividade */
 @media (max-width: 768px) {
+    .button-group-main {
+        flex-direction: column;
+    }
+
+    .button-group-main button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
     li {
         flex-direction: column;
         align-items: flex-start;

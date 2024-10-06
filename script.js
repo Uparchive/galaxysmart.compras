@@ -312,54 +312,6 @@ function generateReport() {
     }
 }
 
-function exportHistory() {
-    const data = { sections, purchasedItems };
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "lista_produtos_historico.json");
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-}
-
-function importHistory(event) {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const data = JSON.parse(e.target.result);
-
-        // Converter sections em array se for um objeto
-        sections = data.sections || [];
-        if (!Array.isArray(sections)) {
-            sections = Object.values(sections);
-        }
-
-        // Garantir que items em cada section sejam arrays
-        sections.forEach(section => {
-            if (section.items) {
-                if (!Array.isArray(section.items)) {
-                    section.items = Object.values(section.items);
-                }
-            } else {
-                section.items = [];
-            }
-        });
-
-        // Converter purchasedItems em array se for um objeto
-        purchasedItems = data.purchasedItems || [];
-        if (!Array.isArray(purchasedItems)) {
-            purchasedItems = Object.values(purchasedItems);
-        }
-
-        saveState();
-        // Limpar o DOM e restaurar o estado
-        document.getElementById('sections').innerHTML = '';
-        restoreState();
-    };
-    reader.readAsText(file);
-}
-
 // Função para salvar o estado atual online (Firebase)
 function saveOnline() {
     const saveName = prompt("Nome para o salvamento:");
@@ -470,6 +422,16 @@ function deleteSavedState(key) {
         alert('Erro ao excluir o salvamento: ' + error.message);
         console.error('Erro ao excluir o salvamento:', error);
     });
+}
+
+// Função para mostrar/ocultar os salvamentos online
+function toggleOnlineSaves() {
+    const onlineSavesSection = document.getElementById('onlineSavesSection');
+    if (onlineSavesSection.style.display === 'none' || onlineSavesSection.style.display === '') {
+        onlineSavesSection.style.display = 'block';
+    } else {
+        onlineSavesSection.style.display = 'none';
+    }
 }
 
 window.onload = function() {
