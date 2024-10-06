@@ -6,14 +6,13 @@ body {
     background-color: #1e1e1e;
     color: #fff;
     margin: 0;
-    padding: 20px;
+    padding: 10px;
 }
 
 h2 {
     color: #00e676;
     padding-bottom: 10px;
-    display: inline-block;
-    font-size: 28px;
+    font-size: 24px;
     text-transform: uppercase;
     border-bottom: 2px solid #00e676;
 }
@@ -21,28 +20,25 @@ h2 {
 ul {
     list-style-type: none;
     padding-left: 0;
-    min-height: 50px;
-    border-radius: 5px;
-    padding: 10px;
+    margin: 0;
 }
 
 li {
     background: linear-gradient(135deg, #2a2a2a 0%, #1e1e1e 100%);
-    padding: 20px;
-    margin: 15px 0;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 230, 118, 0.2);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 5px;
+    margin: 5px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 230, 118, 0.2);
     position: relative;
     overflow: hidden;
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
 li:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 25px rgba(0, 230, 118, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0, 230, 118, 0.3);
 }
 
 li.riscado {
@@ -57,7 +53,7 @@ li::before {
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(0, 230, 118, 0.2), transparent);
-    transition: left 0.7s ease;
+    transition: left 0.5s ease;
 }
 
 li:hover::before {
@@ -67,46 +63,56 @@ li:hover::before {
 .item-header {
     display: flex;
     align-items: center;
-    flex: 1;
-    min-width: 200px;
+    flex-wrap: nowrap;
 }
 
 .item-name {
-    font-size: 16px;
+    font-size: 12px;
     font-weight: bold;
     color: #00e676;
-    text-transform: uppercase;
-    margin-right: 10px;
+    margin-right: 5px;
 }
 
 .item-store {
-    font-size: 14px;
+    font-size: 10px;
     color: #ccc;
+    margin-right: 5px;
+}
+
+.item-separator {
+    width: 1px;
+    height: 15px;
+    background-color: #00e676;
+    margin: 0 3px;
 }
 
 .item-details {
-    font-size: 12px;
+    font-size: 10px;
     color: #ccc;
-    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
 }
 
 .item-details span {
-    display: inline-block;
-    margin-right: 10px;
+    margin-right: 3px;
 }
 
 .button-group {
     display: flex;
     align-items: center;
-    gap: 5px;
-    flex-wrap: wrap;
+    gap: 3px;
+    margin-left: auto;
 }
 
-.button-group button,
+.button-group input,
+.button-group button {
+    font-size: 8px;
+    padding: 3px;
+}
+
 .button-group input {
-    flex: none;
-    font-size: 12px;
-    padding: 5px 10px;
+    width: 35px;
 }
 
 button {
@@ -116,7 +122,7 @@ button {
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 button:hover {
@@ -135,80 +141,68 @@ input[type="number"] {
     border: 1px solid #00e676;
     background-color: #2a2a2a;
     color: #fff;
+    font-size: 10px;
 }
 
-input[type="number"] {
-    width: 60px;
-}
-
-.add-item {
+.add-item,
+.add-section {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 5px;
     margin-top: 10px;
 }
 
 .add-item input,
-.add-item button {
-    flex: 1;
-    min-width: 120px;
-}
-
-.add-section {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.add-section input {
-    flex: 1;
-    min-width: 200px;
-}
-
+.add-item button,
+.add-section input,
 .add-section button {
-    min-width: 120px;
+    flex: 1;
+    min-width: 80px;
+    font-size: 10px;
+    padding: 5px;
 }
 
 .section {
     background-color: #121212;
-    padding: 20px;
-    margin-bottom: 20px;
+    padding: 10px;
+    margin-bottom: 15px;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 230, 118, 0.1);
+    box-shadow: 0 3px 8px rgba(0, 230, 118, 0.1);
 }
 
 .button-group-main {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 20px;
+    gap: 5px;
+    margin-top: 10px;
 }
 
 .button-group-main button {
     flex: 1;
-    min-width: 120px;
+    min-width: 90px;
+    font-size: 10px;
+    padding: 8px;
 }
 
 .saved-cards {
-    margin-top: 20px;
+    margin-top: 15px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 15px;
+    grid-template-columns: 1fr;
+    gap: 10px;
 }
 
 .saved-card {
     background-color: #2a2a2a;
-    padding: 20px;
+    padding: 10px;
     border-radius: 10px;
     border: 1px solid #00e676;
-    box-shadow: 0 5px 15px rgba(0, 230, 118, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 230, 118, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .saved-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 25px rgba(0, 230, 118, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(0, 230, 118, 0.2);
 }
 
 .saved-card-header {
@@ -218,124 +212,29 @@ input[type="number"] {
 }
 
 .saved-card strong {
-    font-size: 18px;
+    font-size: 12px;
     color: #00e676;
 }
 
 .saved-card span {
-    font-size: 14px;
+    font-size: 10px;
     color: #ccc;
 }
 
 .saved-card-buttons {
-    margin-top: 15px;
+    margin-top: 10px;
     display: flex;
-    gap: 10px;
+    gap: 5px;
 }
 
 .saved-card button {
     flex: 1;
     background-color: #00e676;
     color: #1e1e1e;
+    font-size: 10px;
+    padding: 5px;
 }
 
 .saved-card button:hover {
     background-color: #00c853;
-}
-
-/* Ajustes para dispositivos móveis */
-@media (max-width: 768px) {
-    body {
-        padding: 10px;
-    }
-
-    h2 {
-        font-size: 24px;
-    }
-
-    .section {
-        padding: 15px;
-    }
-
-    li {
-        flex-wrap: nowrap;
-    }
-
-    .item-header {
-        flex-direction: row;
-        flex-wrap: nowrap;
-        margin-right: 10px;
-    }
-
-    .item-name {
-        font-size: 14px;
-        margin-right: 5px;
-    }
-
-    .item-store {
-        font-size: 12px;
-    }
-
-    .item-details {
-        font-size: 12px;
-        margin-right: 10px;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-    }
-
-    .item-details span {
-        margin-right: 5px;
-    }
-
-    .button-group {
-        flex-wrap: nowrap;
-    }
-
-    .button-group button,
-    .button-group input {
-        flex: none;
-        font-size: 10px;
-        padding: 5px;
-    }
-
-    .add-item input,
-    .add-item button {
-        flex: 1;
-        min-width: 80px;
-    }
-
-    .add-section input,
-    .add-section button {
-        flex: 1;
-        min-width: 100px;
-    }
-
-    .button-group-main button {
-        flex: 1;
-        min-width: 100px;
-    }
-
-    .saved-cards {
-        grid-template-columns: 1fr;
-    }
-}
-.item-header {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    min-width: 200px;
-}
-
-.item-separator {
-    width: 1px;
-    height: 30px;
-    background-color: #00e676;
-    margin: 0 10px;
-}
-
-@media (max-width: 768px) {
-    .item-separator {
-        height: 20px;
-    }
 }

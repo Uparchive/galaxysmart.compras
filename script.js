@@ -191,15 +191,15 @@ function addItemToDOM(ulElement, item, sectionName) {
             <div class="item-store">${item.store}</div>
             <div class="item-separator"></div>
             <div class="item-details">
-                <span>Estoque: ${item.stock}</span>
-                <span>Pedido: ${item.requested}</span>
+                <span>Est: ${item.stock}</span>
+                <span>Ped: ${item.requested}</span>
             </div>
         </div>
         <div class="button-group">
-            <input type="number" min="0" placeholder="Qtd Comprada" value="${item.purchased}" class="purchased-input" onchange="updatePurchased(event, '${sectionName}', '${item.uniqueId}')">
-            <button class="mark-button" onclick="toggleRiscado(event, '${item.uniqueId}')">Marcar</button>
-            <button class="unmark-button" onclick="toggleRiscado(event, '${item.uniqueId}')" style="display: none;">Desmarcar</button>
-            <button onclick="discardItem(event, '${sectionName}', '${item.uniqueId}')">Descartar</button>
+            <input type="number" min="0" placeholder="Qtd" value="${item.purchased}" class="purchased-input" onchange="updatePurchased(event, '${sectionName}', '${item.uniqueId}')">
+            <button class="mark-button" onclick="toggleRiscado(event, '${item.uniqueId}')" title="Marcar">✓</button>
+            <button class="unmark-button" onclick="toggleRiscado(event, '${item.uniqueId}')" style="display: none;" title="Desmarcar">✗</button>
+            <button onclick="discardItem(event, '${sectionName}', '${item.uniqueId}')" title="Descartar">🗑️</button>
         </div>
     `;
     ulElement.appendChild(listItem);
