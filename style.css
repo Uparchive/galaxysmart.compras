@@ -104,18 +104,24 @@ li:hover::before {
 .button-group {
     display: flex;
     align-items: center;
-    gap: 3px;
-    /* Removido margin-left: auto; */
+    gap: 5px; /* Aumenta o espaçamento entre os botões */
 }
 
-.button-group input,
-.button-group button {
+.button-group input {
+    font-size: 8px;
+    padding: 3px;
+    width: 35px;
+}
+
+.button-group .unmark-button {
     font-size: 8px;
     padding: 3px;
 }
 
-.button-group input {
-    width: 35px;
+.mark-button,
+.discard-button {
+    font-size: 14px; /* Aumenta o tamanho da fonte */
+    padding: 6px;    /* Aumenta o padding */
 }
 
 button {
@@ -247,7 +253,7 @@ input[type="number"] {
 @media (max-width: 768px) {
     /* Ajustes específicos para dispositivos móveis */
     body {
-        padding: 5px; /* Mantemos o padding reduzido */
+        padding: 5px;
     }
 
     h2 {
@@ -269,13 +275,19 @@ input[type="number"] {
     }
 
     .button-group input,
-    .button-group button {
+    .button-group .unmark-button {
         font-size: 8px;
         padding: 2px;
     }
 
     .button-group input {
         width: 30px;
+    }
+
+    .mark-button,
+    .discard-button {
+        font-size: 16px; /* Mantém os botões maiores em dispositivos móveis */
+        padding: 7px;
     }
 
     .add-item input,

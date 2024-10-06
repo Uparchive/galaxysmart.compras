@@ -199,7 +199,7 @@ function addItemToDOM(ulElement, item, sectionName) {
             <input type="number" min="0" placeholder="Qtd" value="${item.purchased}" class="purchased-input" onchange="updatePurchased(event, '${sectionName}', '${item.uniqueId}')">
             <button class="mark-button" onclick="toggleRiscado(event, '${item.uniqueId}')" title="Marcar">✓</button>
             <button class="unmark-button" onclick="toggleRiscado(event, '${item.uniqueId}')" style="display: none;" title="Desmarcar">✗</button>
-            <button onclick="discardItem(event, '${sectionName}', '${item.uniqueId}')" title="Descartar">🗑️</button>
+            <button class="discard-button" onclick="discardItem(event, '${sectionName}', '${item.uniqueId}')" title="Descartar">🗑️</button>
         </div>
     `;
     ulElement.appendChild(listItem);
