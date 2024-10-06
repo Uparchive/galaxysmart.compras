@@ -6,7 +6,7 @@ body {
     background-color: #1e1e1e;
     color: #fff;
     margin: 0;
-    padding: 10px;
+    padding: 5px; /* Reduzido para aproximar o conteúdo das bordas */
 }
 
 h2 {
@@ -15,6 +15,7 @@ h2 {
     font-size: 24px;
     text-transform: uppercase;
     border-bottom: 2px solid #00e676;
+    margin: 0; /* Removido margens */
 }
 
 ul {
@@ -34,6 +35,7 @@ li {
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
+    width: 100%;
 }
 
 li:hover {
@@ -64,6 +66,7 @@ li:hover::before {
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
+    margin-right: 5px;
 }
 
 .item-name {
@@ -102,7 +105,7 @@ li:hover::before {
     display: flex;
     align-items: center;
     gap: 3px;
-    margin-left: auto;
+    /* Removido margin-left: auto; */
 }
 
 .button-group input,
@@ -237,4 +240,61 @@ input[type="number"] {
 
 .saved-card button:hover {
     background-color: #00c853;
+}
+
+/* Responsividade */
+
+@media (max-width: 768px) {
+    /* Ajustes específicos para dispositivos móveis */
+    body {
+        padding: 5px; /* Mantemos o padding reduzido */
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    .section {
+        padding: 10px;
+    }
+
+    .item-name,
+    .item-store,
+    .item-details {
+        font-size: 10px;
+    }
+
+    .item-details span {
+        margin-right: 2px;
+    }
+
+    .button-group input,
+    .button-group button {
+        font-size: 8px;
+        padding: 2px;
+    }
+
+    .button-group input {
+        width: 30px;
+    }
+
+    .add-item input,
+    .add-item button,
+    .add-section input,
+    .add-section button {
+        font-size: 9px;
+        padding: 4px;
+        min-width: 70px;
+    }
+
+    .button-group-main button {
+        font-size: 9px;
+        padding: 6px;
+        min-width: 80px;
+    }
+
+    .saved-card strong,
+    .saved-card span {
+        font-size: 10px;
+    }
 }
