@@ -189,10 +189,11 @@ function addItemToDOM(ulElement, item, sectionName) {
         <div class="item-header">
             <div class="item-name">${item.name}</div>
             <div class="item-store">${item.store}</div>
-        </div>
-        <div class="item-details">
-            <span>Estoque: ${item.stock}</span>
-            <span>Pedida: ${item.requested}</span>
+            <div class="item-separator"></div>
+            <div class="item-details">
+                <span>Estoque: ${item.stock}</span>
+                <span>Pedido: ${item.requested}</span>
+            </div>
         </div>
         <div class="button-group">
             <input type="number" min="0" placeholder="Qtd Comprada" value="${item.purchased}" class="purchased-input" onchange="updatePurchased(event, '${sectionName}', '${item.uniqueId}')">

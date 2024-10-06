@@ -35,6 +35,9 @@ li {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 li:hover {
@@ -63,54 +66,53 @@ li:hover::before {
 
 .item-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
+    flex: 1;
+    min-width: 200px;
 }
 
 .item-name {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: bold;
     color: #00e676;
     text-transform: uppercase;
+    margin-right: 10px;
 }
 
 .item-store {
-    font-size: 16px;
-    color: #ccc;
-    margin-top: 5px;
-}
-
-.item-details {
-    margin-top: 10px;
     font-size: 14px;
     color: #ccc;
 }
 
+.item-details {
+    font-size: 12px;
+    color: #ccc;
+    margin-right: 10px;
+}
+
 .item-details span {
     display: inline-block;
-    margin-right: 15px;
+    margin-right: 10px;
 }
 
 .button-group {
-    margin-top: 15px;
     display: flex;
+    align-items: center;
+    gap: 5px;
     flex-wrap: wrap;
-    gap: 10px;
 }
 
 .button-group button,
 .button-group input {
-    flex: 1;
-    min-width: 100px;
+    flex: none;
+    font-size: 12px;
+    padding: 5px 10px;
 }
 
 button {
     background-color: #00e676;
     border: none;
     color: #1e1e1e;
-    padding: 10px 15px;
-    font-size: 14px;
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
@@ -128,43 +130,64 @@ button:active {
 
 input[type="text"],
 input[type="number"] {
-    padding: 10px;
+    padding: 5px;
     border-radius: 5px;
     border: 1px solid #00e676;
-    margin-right: 10px;
     background-color: #2a2a2a;
     color: #fff;
-    width: calc(100% - 20px);
 }
 
 input[type="number"] {
-    max-width: 100px;
+    width: 60px;
 }
 
-.add-item input {
-    width: calc(25% - 15px);
-    margin-right: 10px;
+.add-item {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
 }
 
+.add-item input,
 .add-item button {
+    flex: 1;
+    min-width: 120px;
+}
+
+.add-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
     margin-top: 20px;
+}
+
+.add-section input {
+    flex: 1;
+    min-width: 200px;
+}
+
+.add-section button {
+    min-width: 120px;
 }
 
 .section {
     background-color: #121212;
-    padding: 30px;
-    margin-bottom: 40px;
+    padding: 20px;
+    margin-bottom: 20px;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 230, 118, 0.1);
 }
 
-.add-section input {
-    width: calc(100% - 140px);
-    margin-right: 10px;
+.button-group-main {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
 }
 
-.add-section button {
-    width: 120px;
+.button-group-main button {
+    flex: 1;
+    min-width: 120px;
 }
 
 .saved-cards {
@@ -231,65 +254,88 @@ input[type="number"] {
     }
 
     .section {
-        padding: 20px;
+        padding: 15px;
+    }
+
+    li {
+        flex-wrap: nowrap;
+    }
+
+    .item-header {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        margin-right: 10px;
     }
 
     .item-name {
-        font-size: 18px;
+        font-size: 14px;
+        margin-right: 5px;
     }
 
     .item-store {
-        font-size: 14px;
+        font-size: 12px;
     }
 
     .item-details {
         font-size: 12px;
+        margin-right: 10px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
     }
 
     .item-details span {
-        margin-right: 10px;
+        margin-right: 5px;
     }
 
     .button-group {
-        flex-direction: column;
-        margin-top: 10px;
+        flex-wrap: nowrap;
     }
 
     .button-group button,
     .button-group input {
-        width: 100%;
-        margin-bottom: 10px;
+        flex: none;
+        font-size: 10px;
+        padding: 5px;
     }
 
-    .add-item input {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-
+    .add-item input,
     .add-item button {
-        width: 100%;
-    }
-
-    .add-section {
-        flex-direction: column;
+        flex: 1;
+        min-width: 80px;
     }
 
     .add-section input,
     .add-section button {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-
-    .button-group-main {
-        flex-direction: column;
+        flex: 1;
+        min-width: 100px;
     }
 
     .button-group-main button {
-        width: 100%;
-        margin-bottom: 10px;
+        flex: 1;
+        min-width: 100px;
     }
 
     .saved-cards {
         grid-template-columns: 1fr;
+    }
+}
+.item-header {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 200px;
+}
+
+.item-separator {
+    width: 1px;
+    height: 30px;
+    background-color: #00e676;
+    margin: 0 10px;
+}
+
+@media (max-width: 768px) {
+    .item-separator {
+        height: 20px;
     }
 }
