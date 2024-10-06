@@ -65,6 +65,7 @@ li:hover::before {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .item-name {
@@ -72,6 +73,12 @@ li:hover::before {
     font-weight: bold;
     color: #00e676;
     text-transform: uppercase;
+}
+
+.item-store {
+    font-size: 16px;
+    color: #ccc;
+    margin-top: 5px;
 }
 
 .item-details {
@@ -88,11 +95,14 @@ li:hover::before {
 .button-group {
     margin-top: 15px;
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
 }
 
-.button-group button {
+.button-group button,
+.button-group input {
     flex: 1;
+    min-width: 100px;
 }
 
 button {
@@ -116,7 +126,8 @@ button:active {
     transform: scale(0.95);
 }
 
-input[type="text"], input[type="number"] {
+input[type="text"],
+input[type="number"] {
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #00e676;
@@ -209,27 +220,76 @@ input[type="number"] {
     background-color: #00c853;
 }
 
+/* Ajustes para dispositivos móveis */
 @media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    .section {
+        padding: 20px;
+    }
+
+    .item-name {
+        font-size: 18px;
+    }
+
+    .item-store {
+        font-size: 14px;
+    }
+
+    .item-details {
+        font-size: 12px;
+    }
+
+    .item-details span {
+        margin-right: 10px;
+    }
+
+    .button-group {
+        flex-direction: column;
+        margin-top: 10px;
+    }
+
+    .button-group button,
+    .button-group input {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
     .add-item input {
         width: 100%;
         margin-bottom: 10px;
     }
 
-    .button-group {
-        flex-direction: column;
-    }
-
-    .button-group button {
+    .add-item button {
         width: 100%;
-        margin-bottom: 10px;
     }
 
     .add-section {
         flex-direction: column;
     }
 
-    .add-section input, .add-section button {
+    .add-section input,
+    .add-section button {
         width: 100%;
         margin-bottom: 10px;
+    }
+
+    .button-group-main {
+        flex-direction: column;
+    }
+
+    .button-group-main button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .saved-cards {
+        grid-template-columns: 1fr;
     }
 }
