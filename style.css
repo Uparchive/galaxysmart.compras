@@ -2,64 +2,63 @@
 
 /* Estilos globais */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    color: #333;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #1e1e1e;
+    color: #fff;
     margin: 0;
     padding: 20px;
 }
 
 h2 {
-    color: #007f82;
+    color: #00e676;
     padding-bottom: 10px;
     display: inline-block;
+    font-size: 28px;
+    text-transform: uppercase;
+    border-bottom: 2px solid #00e676;
 }
 
 ul {
     list-style-type: none;
     padding-left: 0;
     min-height: 50px;
-    border: 2px dashed #007f82;
     border-radius: 5px;
     padding: 10px;
-}
-
-ul.placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #e0f7fa;
-}
-
-ul.placeholder::after {
-    content: "+";
-    font-size: 24px;
-    color: #007f82;
 }
 
 li {
-    background-color: #fff;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    cursor: grab;
-    transition: transform 0.2s ease, background-color 0.2s ease;
-    touch-action: pan-y;
-    user-select: none;
+    background: linear-gradient(135deg, #2a2a2a 0%, #1e1e1e 100%);
+    padding: 20px;
+    margin: 15px 0;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 230, 118, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-li:active {
-    cursor: grabbing;
-    transform: scale(1.02);
-    background-color: #e0f7fa;
+li:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 25px rgba(0, 230, 118, 0.3);
 }
 
 li.riscado {
-    text-decoration: line-through;
-    color: gray;
+    opacity: 0.6;
+}
+
+li::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 230, 118, 0.2), transparent);
+    transition: left 0.7s ease;
+}
+
+li:hover::before {
+    left: 100%;
 }
 
 .item-header {
@@ -68,110 +67,93 @@ li.riscado {
     align-items: center;
 }
 
+.item-name {
+    font-size: 20px;
+    font-weight: bold;
+    color: #00e676;
+    text-transform: uppercase;
+}
+
 .item-details {
-    margin-top: 5px;
-}
-
-/* Estilos para botões */
-button {
-    background-color: #007f82;
-    border: none;
-    color: white;
-    padding: 8px 16px;
-    text-align: center;
+    margin-top: 10px;
     font-size: 14px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    color: #ccc;
 }
 
-button:hover {
-    background-color: #005f5f;
+.item-details span {
+    display: inline-block;
+    margin-right: 15px;
 }
 
-/* Agrupamento dos botões principais */
-.button-group-main {
-    margin-top: 20px;
+.button-group {
+    margin-top: 15px;
     display: flex;
-    flex-wrap: wrap;
     gap: 10px;
 }
 
-.button-group-main button {
+.button-group button {
     flex: 1;
 }
 
-/* Estilos para o botão de mostrar/ocultar salvamentos online */
-.toggle-saves-btn {
-    background-color: #ffa500;
-    color: #fff;
+button {
+    background-color: #00e676;
+    border: none;
+    color: #1e1e1e;
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
     font-weight: bold;
-    padding: 10px 20px;
-    border-radius: 30px;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-.toggle-saves-btn .arrow {
-    margin-left: 10px;
-    transition: transform 0.3s ease;
-}
-
-.toggle-saves-btn.active .arrow {
-    transform: rotate(180deg);
-}
-
-.toggle-saves-btn:hover {
-    background-color: #ff8c00;
+button:hover {
+    background-color: #00c853;
     transform: scale(1.05);
 }
 
-.toggle-saves-btn:active {
-    background-color: #ff7f00;
+button:active {
     transform: scale(0.95);
 }
 
 input[type="text"], input[type="number"] {
-    padding: 5px;
+    padding: 10px;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #00e676;
     margin-right: 10px;
+    background-color: #2a2a2a;
+    color: #fff;
+    width: calc(100% - 20px);
 }
 
 input[type="number"] {
-    width: 70px;
+    max-width: 100px;
 }
 
-.container {
-    display: flex;
-    align-items: center;
+.add-item input {
+    width: calc(25% - 15px);
+    margin-right: 10px;
 }
 
-.button-group {
-    display: flex;
-    gap: 10px;
-}
-
-.add-section {
+.add-item button {
     margin-top: 20px;
 }
 
-.discard-section-btn {
-    margin-left: 10px;
-    background-color: #ff5c5c;
-}
-
-.discard-section-btn:hover {
-    background-color: #e04a4a;
-}
-
 .section {
-    background-color: #e0f7fa;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 5px;
+    background-color: #121212;
+    padding: 30px;
+    margin-bottom: 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 230, 118, 0.1);
+}
+
+.add-section input {
+    width: calc(100% - 140px);
+    margin-right: 10px;
+}
+
+.add-section button {
+    width: 120px;
 }
 
 .saved-cards {
@@ -182,11 +164,17 @@ input[type="number"] {
 }
 
 .saved-card {
-    background-color: #ffffff;
-    padding: 15px;
+    background-color: #2a2a2a;
+    padding: 20px;
     border-radius: 10px;
-    border: 1px solid #007f82;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid #00e676;
+    box-shadow: 0 5px 15px rgba(0, 230, 118, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.saved-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 25px rgba(0, 230, 118, 0.2);
 }
 
 .saved-card-header {
@@ -196,45 +184,51 @@ input[type="number"] {
 }
 
 .saved-card strong {
-    font-size: 16px;
+    font-size: 18px;
+    color: #00e676;
+}
+
+.saved-card span {
+    font-size: 14px;
+    color: #ccc;
+}
+
+.saved-card-buttons {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
 }
 
 .saved-card button {
-    padding: 5px 10px;
-    font-size: 12px;
-    margin-left: 5px;
+    flex: 1;
+    background-color: #00e676;
+    color: #1e1e1e;
 }
 
-.saved-card-content {
-    margin-top: 10px;
+.saved-card button:hover {
+    background-color: #00c853;
 }
 
-.saved-card-content ul {
-    list-style-type: disc;
-    padding-left: 20px;
-}
-
-/* Responsividade */
 @media (max-width: 768px) {
-    .button-group-main {
-        flex-direction: column;
-    }
-
-    .button-group-main button {
+    .add-item input {
         width: 100%;
         margin-bottom: 10px;
     }
 
-    li {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
     .button-group {
-        margin-top: 10px;
+        flex-direction: column;
     }
 
-    input[type="number"], input[type="text"] {
+    .button-group button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .add-section {
+        flex-direction: column;
+    }
+
+    .add-section input, .add-section button {
         width: 100%;
         margin-bottom: 10px;
     }

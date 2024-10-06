@@ -184,16 +184,23 @@ function addItem(event, sectionName) {
 
 function addItemToDOM(ulElement, item, sectionName) {
     const listItem = document.createElement('li');
-    listItem.classList.add('container');
-    listItem.setAttribute('draggable', true);
     listItem.setAttribute('data-unique-id', item.uniqueId);
-    listItem.innerHTML = `(Estoque: ${item.stock}) ${item.name} (Pedida: ${item.requested}, Loja: ${item.store})
+    listItem.innerHTML = `
+        <div class="item-header">
+            <div class="item-name">${item.name}</div>
+            <div class="item-store">${item.store}</div>
+        </div>
+        <div class="item-details">
+            <span>Estoque: ${item.stock}</span>
+            <span>Pedida: ${item.requested}</span>
+        </div>
         <div class="button-group">
             <input type="number" min="0" placeholder="Qtd Comprada" value="${item.purchased}" class="purchased-input" onchange="updatePurchased(event, '${sectionName}', '${item.uniqueId}')">
             <button class="mark-button" onclick="toggleRiscado(event, '${item.uniqueId}')">Marcar</button>
             <button class="unmark-button" onclick="toggleRiscado(event, '${item.uniqueId}')" style="display: none;">Desmarcar</button>
             <button onclick="discardItem(event, '${sectionName}', '${item.uniqueId}')">Descartar</button>
-        </div>`;
+        </div>
+    `;
     ulElement.appendChild(listItem);
 
     // Se o item já estava riscado (purchased > 0), atualiza a interface
