@@ -8,7 +8,7 @@ var firebaseConfig = {
     messagingSenderId: "853849509051",
     appId: "1:853849509051:web:6fa7e18d0af9b9375b2d9e",
     measurementId: "G-PHWMDP8QE0"
-  };
+};
 // Inicializa o Firebase
 firebase.initializeApp(firebaseConfig);
 var database = firebase.database();
@@ -27,6 +27,7 @@ function toggleRiscado(event, uniqueId) {
     const unmarkButton = listItem.querySelector('.unmark-button');
 
     const section = sections.find(s => s.items.some(i => i.uniqueId === uniqueId));
+    if (!section) return;
     const item = section.items.find(i => i.uniqueId === uniqueId);
 
     if (listItem.classList.contains('riscado')) {
@@ -58,7 +59,7 @@ function discardItem(event, sectionName, uniqueId) {
         section.items = section.items.filter(item => item.uniqueId !== uniqueId);
         purchasedItems = purchasedItems.filter(item => item.uniqueId !== uniqueId);
         const listItem = event.target.closest('li');
-        listItem.remove();
+        if (listItem) listItem.remove();
         saveState();
     }
 }
@@ -67,7 +68,7 @@ function discardSection(event, sectionName) {
     sections = sections.filter(section => section.name !== sectionName);
     purchasedItems = purchasedItems.filter(item => item.section !== sectionName);
     const sectionDiv = event.target.closest('.section');
-    sectionDiv.remove();
+    if (sectionDiv) sectionDiv.remove();
     saveState();
 }
 
@@ -80,9 +81,11 @@ function editSectionName(event, oldName) {
 
             // Atualizar o DOM
             const sectionDiv = event.target.closest('.section');
-            sectionDiv.querySelector('h2').textContent = newName;
-            const ulElement = sectionDiv.querySelector('ul');
-            ulElement.dataset.sectionName = newName;
+            if (sectionDiv) {
+                sectionDiv.querySelector('h2').textContent = newName;
+                const ulElement = sectionDiv.querySelector('ul');
+                ulElement.dataset.sectionName = newName;
+            }
 
             saveState();
         }
@@ -91,14 +94,17 @@ function editSectionName(event, oldName) {
 
 function restoreState() {
     const sectionsContainer = document.getElementById('sections');
-    sectionsContainer.innerHTML = '';
-    sections.forEach(section => {
-        addSectionToDOM(section.name, section.items);
-    });
+    if (sectionsContainer) {
+        sectionsContainer.innerHTML = '';
+        sections.forEach(section => {
+            addSectionToDOM(section.name, section.items);
+        });
+    }
 }
 
 function addSection() {
     const sectionNameInput = document.getElementById('newSectionName');
+    if (!sectionNameInput) return;
     const sectionName = sectionNameInput.value.trim();
     if (sectionName) {
         const newSection = { name: sectionName, items: [] };
@@ -113,6 +119,7 @@ function addSection() {
 
 function addSectionToDOM(name, items) {
     const sectionsContainer = document.getElementById('sections');
+    if (!sectionsContainer) return;
     const sectionDiv = document.createElement('div');
     sectionDiv.classList.add('section');
     sectionDiv.innerHTML = `<h2>${name}</h2>
@@ -148,6 +155,7 @@ function addSectionToDOM(name, items) {
 
 function addItem(event, sectionName) {
     const sectionDiv = event.target.closest('.section');
+    if (!sectionDiv) return;
     const itemStockInput = sectionDiv.querySelector('.newItemStock');
     const itemNameInput = sectionDiv.querySelector('.newItemName');
     const itemRequestedInput = sectionDiv.querySelector('.newItemRequested');
@@ -160,6 +168,7 @@ function addItem(event, sectionName) {
 
     if (itemName && itemStore) {
         const section = sections.find(s => s.name === sectionName);
+        if (!section) return;
         const newItem = {
             name: itemName,
             stock: itemStock,
@@ -217,6 +226,7 @@ function addItemToDOM(ulElement, item, sectionName) {
 
 function editItem(event, sectionName, uniqueId) {
     const listItem = event.target.closest('li');
+    if (!listItem) return;
     const itemIndex = sections.findIndex(section => section.name === sectionName);
     if (itemIndex !== -1) {
         const item = sections[itemIndex].items.find(item => item.uniqueId === uniqueId);
@@ -243,6 +253,7 @@ function editItem(event, sectionName, uniqueId) {
 
 function saveEditItem(event, sectionName, uniqueId) {
     const listItem = event.target.closest('li');
+    if (!listItem) return;
     const nameInput = listItem.querySelector('.edit-name');
     const storeInput = listItem.querySelector('.edit-store');
     const stockInput = listItem.querySelector('.edit-stock');
@@ -275,6 +286,19 @@ function cancelEditItem(event) {
     restoreState();
 }
 
+function deleteSavedState(key) {
+    const password = prompt("Digite a senha para confirmar a exclusão:");
+    if (password === "DJL2024") {
+        database.ref('/savedStates/' + key).remove().then(() => {
+            loadSavedStates();
+        }).catch(function(error) {
+            alert('Erro ao excluir o salvamento: ' + error.message);
+            console.error('Erro ao excluir o salvamento:', error);
+        });
+    } else {
+        alert("Senha incorreta. Operação de exclusão cancelada.");
+    }
+}
 
 function initializeSortable(ulElement) {
     new Sortable(ulElement, {
@@ -299,12 +323,14 @@ function initializeSortable(ulElement) {
             if (oldSectionName && newSectionName && oldSectionName !== newSectionName) {
                 const oldSection = sections.find(section => section.name === oldSectionName);
                 const newSection = sections.find(section => section.name === newSectionName);
-                const movedItem = oldSection.items.find(item => item.uniqueId === itemId);
+                if (oldSection && newSection) {
+                    const movedItem = oldSection.items.find(item => item.uniqueId === itemId);
 
-                // Remover o item da seção antiga e adicionar na nova
-                oldSection.items = oldSection.items.filter(item => item.uniqueId !== itemId);
-                newSection.items.push(movedItem);
-                saveState();
+                    // Remover o item da seção antiga e adicionar na nova
+                    oldSection.items = oldSection.items.filter(item => item.uniqueId !== itemId);
+                    newSection.items.push(movedItem);
+                    saveState();
+                }
             }
 
             // Atualizar o placeholder das seções
@@ -358,6 +384,7 @@ function updatePurchased(event, sectionName, uniqueId) {
 
 function generateReport() {
     const reportContainer = document.getElementById('report');
+    if (!reportContainer) return;
     reportContainer.innerHTML = '<h3>Relatório de Compras:</h3>';
 
     const markedItems = sections.flatMap(section => {
@@ -404,6 +431,7 @@ function saveOnline() {
 // Função para carregar os estados salvos online
 function loadSavedStates() {
     const savedCardsContainer = document.getElementById('savedCards');
+    if (!savedCardsContainer) return;
     savedCardsContainer.innerHTML = '<p>Carregando salvamentos...</p>';
 
     database.ref('/savedStates/').once('value').then(function(snapshot) {
@@ -430,6 +458,7 @@ function loadSavedStates() {
 // Função para adicionar um cartão de salvamento ao DOM
 function addSavedCardToDOM(savedState) {
     const savedCardsContainer = document.getElementById('savedCards');
+    if (!savedCardsContainer) return;
     const card = document.createElement('div');
     card.classList.add('saved-card');
     const date = new Date(savedState.timestamp);
@@ -486,21 +515,28 @@ function restoreSavedState(key) {
 
 // Função para excluir um estado salvo
 function deleteSavedState(key) {
-    database.ref('/savedStates/' + key).remove().then(() => {
-        loadSavedStates();
-    }).catch(function(error) {
-        alert('Erro ao excluir o salvamento: ' + error.message);
-        console.error('Erro ao excluir o salvamento:', error);
-    });
+    const password = prompt("Digite a senha para confirmar a exclusão:");
+    if (password === "DJL2024") {
+        database.ref('/savedStates/' + key).remove().then(() => {
+            loadSavedStates();
+        }).catch(function(error) {
+            alert('Erro ao excluir o salvamento: ' + error.message);
+            console.error('Erro ao excluir o salvamento:', error);
+        });
+    } else {
+        alert("Senha incorreta. Operação de exclusão cancelada.");
+    }
 }
 
 // Função para mostrar/ocultar os salvamentos online
 function toggleOnlineSaves() {
     const onlineSavesSection = document.getElementById('onlineSavesSection');
-    if (onlineSavesSection.style.display === 'none' || onlineSavesSection.style.display === '') {
-        onlineSavesSection.style.display = 'block';
-    } else {
-        onlineSavesSection.style.display = 'none';
+    if (onlineSavesSection) {
+        if (onlineSavesSection.style.display === 'none' || onlineSavesSection.style.display === '') {
+            onlineSavesSection.style.display = 'block';
+        } else {
+            onlineSavesSection.style.display = 'none';
+        }
     }
 }
 
