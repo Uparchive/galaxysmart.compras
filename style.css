@@ -391,3 +391,10 @@ input[type="number"] {
 .sortable.fixed li {
     cursor: default; /* Evita que o cursor de arrastar apareça nos itens */
 }
+
+/* Estilos para a Área de Contagem Total de Itens */
+.total-items {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #00e676;
+}

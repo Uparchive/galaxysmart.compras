@@ -23,6 +23,7 @@ let sections = JSON.parse(localStorage.getItem('sections')) || [];
 function saveState() {
     localStorage.setItem('purchasedItems', JSON.stringify(purchasedItems));
     localStorage.setItem('sections', JSON.stringify(sections));
+    updateTotalItemCount(); // Atualiza a contagem total sempre que o estado é salvo
 }
 
 // Função para alternar o estado riscado do item
@@ -83,6 +84,13 @@ function discardSection(event, sectionName) {
 function editSectionName(event, oldName) {
     const newName = prompt('Editar nome da seção:', oldName);
     if (newName && newName.trim() !== '') {
+        // Verifica se já existe uma seção com o novo nome
+        const existingSection = sections.find(s => s.name.toLowerCase() === newName.toLowerCase());
+        if (existingSection) {
+            alert('Já existe uma seção com este nome.');
+            return;
+        }
+
         const section = sections.find(s => s.name === oldName);
         if (section) {
             section.name = newName;
@@ -109,6 +117,7 @@ function restoreState() {
             addSectionToDOM(section.name, section.items, section.isFixed);
         });
     }
+    updateTotalItemCount(); // Atualiza a contagem total ao restaurar o estado
 }
 
 // Função para adicionar uma nova seção
@@ -117,6 +126,13 @@ function addSection() {
     if (!sectionNameInput) return;
     const sectionName = sectionNameInput.value.trim();
     if (sectionName) {
+        // Verifica se já existe uma seção com o mesmo nome
+        const existingSection = sections.find(s => s.name.toLowerCase() === sectionName.toLowerCase());
+        if (existingSection) {
+            alert('Já existe uma seção com este nome.');
+            return;
+        }
+
         const newSection = { name: sectionName, items: [], isFixed: false };
         sections.push(newSection);
         addSectionToDOM(sectionName, [], false);
@@ -266,6 +282,8 @@ function addItemToDOM(ulElement, item, sectionName) {
         markButton.style.display = 'none';
         unmarkButton.style.display = 'inline-block';
     }
+
+    updateTotalItemCount(); // Atualiza a contagem total ao adicionar um item
 }
 
 // Função para editar um item
@@ -276,6 +294,9 @@ function editItem(event, sectionName, uniqueId) {
     if (itemIndex !== -1) {
         const item = sections[itemIndex].items.find(item => item.uniqueId === uniqueId);
         if (item) {
+            // Verifica se já existe um formulário de edição aberto
+            if (listItem.querySelector('.edit-form')) return;
+
             // Cria um formulário para editar o item
             const editForm = document.createElement('div');
             editForm.classList.add('edit-form');
@@ -310,14 +331,29 @@ function saveEditItem(event, sectionName, uniqueId) {
     const updatedStock = stockInput.value.trim();
     const updatedRequested = requestedInput.value.trim();
 
+    if (!updatedName || !updatedStore) {
+        alert('Por favor, insira um nome e uma loja válidos.');
+        return;
+    }
+
+    // Verifica se já existe um item com o mesmo nome e loja na seção
+    const section = sections.find(s => s.name === sectionName);
+    if (section) {
+        const duplicateItem = section.items.find(i => i.name.toLowerCase() === updatedName.toLowerCase() && i.store.toLowerCase() === updatedStore.toLowerCase() && i.uniqueId !== uniqueId);
+        if (duplicateItem) {
+            alert('Já existe um item com este nome e loja na seção.');
+            return;
+        }
+    }
+
     const sectionIndex = sections.findIndex(section => section.name === sectionName);
     if (sectionIndex !== -1) {
         const itemIndex = sections[sectionIndex].items.findIndex(item => item.uniqueId === uniqueId);
         if (itemIndex !== -1) {
             sections[sectionIndex].items[itemIndex].name = updatedName;
             sections[sectionIndex].items[itemIndex].store = updatedStore;
-            sections[sectionIndex].items[itemIndex].stock = updatedStock;
-            sections[sectionIndex].items[itemIndex].requested = updatedRequested;
+            sections[sectionIndex].items[itemIndex].stock = parseInt(updatedStock) || 0;
+            sections[sectionIndex].items[itemIndex].requested = parseInt(updatedRequested) || 0;
             saveState();
             // Recria o item na DOM
             const ulElement = listItem.parentElement;
@@ -390,6 +426,8 @@ function initializeSortable(ulElement, isFixed) {
             if (evt.to.children.length > 0) {
                 evt.to.classList.remove('placeholder');
             }
+
+            updateTotalItemCount(); // Atualiza a contagem total após mover um item
         }
     });
 
@@ -468,6 +506,8 @@ function generateReport() {
     if (reportSection) {
         reportSection.scrollIntoView({ behavior: 'smooth' });
     }
+
+    updateTotalItemCount(); // Atualiza a contagem total após gerar o relatório
 }
 
 // Função para salvar o estado atual online (Firebase)
@@ -589,6 +629,37 @@ function toggleOnlineSaves() {
             onlineSavesSection.style.display = 'none';
         }
     }
+}
+
+// Função para atualizar a contagem total de itens
+function updateTotalItemCount() {
+    const totalCountElement = document.getElementById('totalItemCount');
+    if (!totalCountElement) return;
+    let total = 0;
+    sections.forEach(section => {
+        total += section.items.length;
+    });
+    totalCountElement.textContent = total;
+}
+
+// Função para organizar itens por similaridade de nomes dentro das seções
+function organizeBySimilarity() {
+    // Itera sobre cada seção para ordenar seus itens
+    sections.forEach(section => {
+        // Ordena os itens da seção com base no nome (case-insensitive)
+        section.items.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+    });
+
+    // Re-renderiza todas as seções para refletir a nova ordem
+    restoreState();
+
+    saveState();
+    alert('Itens organizados por similaridade de nomes.');
+}
+
+// Função para capitalizar a primeira letra de uma string (não mais necessária para organizar por similaridade, mas mantida para outras funcionalidades)
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 // Função para inicializar tudo ao carregar a página

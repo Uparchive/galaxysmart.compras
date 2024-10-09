@@ -23,10 +23,16 @@
     <div class="button-group-main">
         <button onclick="generateReport()">Gerar Relatório</button>
         <button onclick="saveOnline()">Salvar Online</button>
+        <button onclick="organizeBySimilarity()">Organizar por Similaridade</button> <!-- Novo Botão -->
         <button class="toggle-saves-btn" onclick="toggleOnlineSaves()">
             Histórico Online
             <span class="arrow">&#9660;</span>
         </button>
+    </div>
+
+    <!-- Área de Contagem Total de Itens -->
+    <div class="total-items">
+        Total de Itens: <span id="totalItemCount">0</span>
     </div>
 
     <!-- Container para as seções -->
