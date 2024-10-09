@@ -1,3 +1,5 @@
+// script.js
+
 // Configuração do Firebase
 var firebaseConfig = {
     apiKey: "AIzaSyAbADgKRicHlfDWoaXmIfU0EjGbU6nFkPQ",
@@ -13,14 +15,17 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 var database = firebase.database();
 
+// Dados armazenados no localStorage ou inicializados vazios
 let purchasedItems = JSON.parse(localStorage.getItem('purchasedItems')) || [];
 let sections = JSON.parse(localStorage.getItem('sections')) || [];
 
+// Função para salvar o estado no localStorage
 function saveState() {
     localStorage.setItem('purchasedItems', JSON.stringify(purchasedItems));
     localStorage.setItem('sections', JSON.stringify(sections));
 }
 
+// Função para alternar o estado riscado do item
 function toggleRiscado(event, uniqueId) {
     const listItem = event.target.closest('li');
     const markButton = listItem.querySelector('.mark-button');
@@ -53,6 +58,7 @@ function toggleRiscado(event, uniqueId) {
     saveState();
 }
 
+// Função para descartar um item
 function discardItem(event, sectionName, uniqueId) {
     const section = sections.find(s => s.name === sectionName);
     if (section) {
@@ -64,6 +70,7 @@ function discardItem(event, sectionName, uniqueId) {
     }
 }
 
+// Função para descartar uma seção
 function discardSection(event, sectionName) {
     sections = sections.filter(section => section.name !== sectionName);
     purchasedItems = purchasedItems.filter(item => item.section !== sectionName);
@@ -72,6 +79,7 @@ function discardSection(event, sectionName) {
     saveState();
 }
 
+// Função para editar o nome da seção
 function editSectionName(event, oldName) {
     const newName = prompt('Editar nome da seção:', oldName);
     if (newName && newName.trim() !== '') {
@@ -92,24 +100,26 @@ function editSectionName(event, oldName) {
     }
 }
 
+// Função para restaurar o estado salvo
 function restoreState() {
     const sectionsContainer = document.getElementById('sections');
     if (sectionsContainer) {
         sectionsContainer.innerHTML = '';
         sections.forEach(section => {
-            addSectionToDOM(section.name, section.items);
+            addSectionToDOM(section.name, section.items, section.isFixed);
         });
     }
 }
 
+// Função para adicionar uma nova seção
 function addSection() {
     const sectionNameInput = document.getElementById('newSectionName');
     if (!sectionNameInput) return;
     const sectionName = sectionNameInput.value.trim();
     if (sectionName) {
-        const newSection = { name: sectionName, items: [] };
+        const newSection = { name: sectionName, items: [], isFixed: false };
         sections.push(newSection);
-        addSectionToDOM(sectionName, []);
+        addSectionToDOM(sectionName, [], false);
         sectionNameInput.value = '';
         saveState();
     } else {
@@ -117,7 +127,8 @@ function addSection() {
     }
 }
 
-function addSectionToDOM(name, items) {
+// Função para adicionar uma seção ao DOM
+function addSectionToDOM(name, items, isFixed) {
     const sectionsContainer = document.getElementById('sections');
     if (!sectionsContainer) return;
     const sectionDiv = document.createElement('div');
@@ -125,7 +136,8 @@ function addSectionToDOM(name, items) {
     sectionDiv.innerHTML = `<h2>${name}</h2>
         <button class="discard-section-btn" onclick="discardSection(event, '${name}')">Descartar Seção</button>
         <button class="edit-section-btn" onclick="editSectionName(event, '${name}')">Editar Seção</button>
-        <ul class="sortable" ondragover="event.preventDefault()"></ul>
+        <button class="pin-section-btn" onclick="toggleFixSection('${name}')">${isFixed ? 'Destravar Seção' : 'Fixar Seção'}</button>
+        <ul class="sortable" data-section-name="${name}"></ul>
         <div class="add-item">
             <input type="number" placeholder="Qtd Estoque" class="newItemStock">
             <input type="text" placeholder="Nome do Produto" class="newItemName">
@@ -135,7 +147,11 @@ function addSectionToDOM(name, items) {
         </div>`;
     sectionsContainer.appendChild(sectionDiv);
     const ulElement = sectionDiv.querySelector('ul');
-    ulElement.dataset.sectionName = name;
+
+    // Adiciona a classe 'fixed' se a seção estiver fixada
+    if (isFixed) {
+        ulElement.classList.add('fixed');
+    }
 
     // Converter items em array se for um objeto
     if (!items) {
@@ -150,9 +166,36 @@ function addSectionToDOM(name, items) {
     items.forEach(item => {
         addItemToDOM(ulElement, item, name);
     });
-    initializeSortable(ulElement);
+
+    initializeSortable(ulElement, isFixed);
 }
 
+// Função para alternar o estado fixado de uma seção
+function toggleFixSection(sectionName) {
+    const section = sections.find(s => s.name === sectionName);
+    if (!section) return;
+
+    section.isFixed = !section.isFixed;
+
+    // Atualizar o DOM
+    const sectionDiv = document.querySelector(`[data-section-name="${sectionName}"]`).closest('.section');
+    const pinButton = sectionDiv.querySelector('.pin-section-btn');
+    const ulElement = sectionDiv.querySelector('ul');
+
+    if (section.isFixed) {
+        ulElement.classList.add('fixed');
+        pinButton.textContent = "Destravar Seção";
+        ulElement._sortable.option("disabled", true); // Desabilita a ordenação
+    } else {
+        ulElement.classList.remove('fixed');
+        pinButton.textContent = "Fixar Seção";
+        ulElement._sortable.option("disabled", false); // Habilita a ordenação
+    }
+
+    saveState();
+}
+
+// Função para adicionar um item a uma seção
 function addItem(event, sectionName) {
     const sectionDiv = event.target.closest('.section');
     if (!sectionDiv) return;
@@ -191,6 +234,7 @@ function addItem(event, sectionName) {
     }
 }
 
+// Função para adicionar um item ao DOM
 function addItemToDOM(ulElement, item, sectionName) {
     const listItem = document.createElement('li');
     listItem.setAttribute('data-unique-id', item.uniqueId);
@@ -224,6 +268,7 @@ function addItemToDOM(ulElement, item, sectionName) {
     }
 }
 
+// Função para editar um item
 function editItem(event, sectionName, uniqueId) {
     const listItem = event.target.closest('li');
     if (!listItem) return;
@@ -251,6 +296,7 @@ function editItem(event, sectionName, uniqueId) {
     }
 }
 
+// Função para salvar a edição de um item
 function saveEditItem(event, sectionName, uniqueId) {
     const listItem = event.target.closest('li');
     if (!listItem) return;
@@ -281,11 +327,13 @@ function saveEditItem(event, sectionName, uniqueId) {
     }
 }
 
+// Função para cancelar a edição de um item
 function cancelEditItem(event) {
     // Recarrega o estado atual da seção para desfazer a edição
     restoreState();
 }
 
+// Função para deletar um estado salvo no Firebase
 function deleteSavedState(key) {
     const password = prompt("Digite a senha para confirmar a exclusão:");
     if (password === "DJL2024") {
@@ -300,8 +348,9 @@ function deleteSavedState(key) {
     }
 }
 
-function initializeSortable(ulElement) {
-    new Sortable(ulElement, {
+// Função para inicializar o Sortable.js em um elemento <ul>
+function initializeSortable(ulElement, isFixed) {
+    const sortable = new Sortable(ulElement, {
         group: {
             name: 'shared',
             pull: true,
@@ -315,6 +364,7 @@ function initializeSortable(ulElement) {
         scrollSpeed: 20,
         emptyInsertThreshold: 10,
         supportPointer: false,
+        disabled: isFixed, // Desabilita a ordenação se a seção estiver fixada
         onEnd: function (evt) {
             const itemId = evt.item.getAttribute('data-unique-id');
             const oldSectionName = evt.from.dataset.sectionName;
@@ -342,8 +392,12 @@ function initializeSortable(ulElement) {
             }
         }
     });
+
+    // Salva a instância do Sortable no próprio elemento para controle posterior
+    ulElement._sortable = sortable;
 }
 
+// Função para atualizar a quantidade comprada de um item
 function updatePurchased(event, sectionName, uniqueId) {
     const section = sections.find(s => s.name === sectionName);
     if (section) {
@@ -382,6 +436,7 @@ function updatePurchased(event, sectionName, uniqueId) {
     }
 }
 
+// Função para gerar um relatório dos itens comprados
 function generateReport() {
     const reportContainer = document.getElementById('report');
     if (!reportContainer) return;
@@ -406,6 +461,12 @@ function generateReport() {
         reportContainer.appendChild(ul);
     } else {
         reportContainer.innerHTML += '<p>Nenhum item foi marcado como comprado.</p>';
+    }
+
+    // Scroll automático para a seção de relatório
+    const reportSection = document.getElementById('report');
+    if (reportSection) {
+        reportSection.scrollIntoView({ behavior: 'smooth' });
     }
 }
 
@@ -484,7 +545,7 @@ function restoreSavedState(key) {
             sections = Object.values(sections);
         }
 
-        // Garantir que items em cada section sejam arrays
+        // Garantir que items em cada section sejam arrays e adicionar isFixed
         sections.forEach(section => {
             if (section.items) {
                 if (!Array.isArray(section.items)) {
@@ -492,6 +553,9 @@ function restoreSavedState(key) {
                 }
             } else {
                 section.items = [];
+            }
+            if (typeof section.isFixed !== 'boolean') {
+                section.isFixed = false;
             }
         });
 
@@ -513,33 +577,21 @@ function restoreSavedState(key) {
     });
 }
 
-// Função para excluir um estado salvo
-function deleteSavedState(key) {
-    const password = prompt("Digite a senha para confirmar a exclusão:");
-    if (password === "DJL2024") {
-        database.ref('/savedStates/' + key).remove().then(() => {
-            loadSavedStates();
-        }).catch(function(error) {
-            alert('Erro ao excluir o salvamento: ' + error.message);
-            console.error('Erro ao excluir o salvamento:', error);
-        });
-    } else {
-        alert("Senha incorreta. Operação de exclusão cancelada.");
-    }
-}
-
-// Função para mostrar/ocultar os salvamentos online
+// Função para mostrar/ocultar os salvamentos online e realizar o scroll
 function toggleOnlineSaves() {
     const onlineSavesSection = document.getElementById('onlineSavesSection');
     if (onlineSavesSection) {
         if (onlineSavesSection.style.display === 'none' || onlineSavesSection.style.display === '') {
             onlineSavesSection.style.display = 'block';
+            // Scroll automático para a seção de salvamentos online
+            onlineSavesSection.scrollIntoView({ behavior: 'smooth' });
         } else {
             onlineSavesSection.style.display = 'none';
         }
     }
 }
 
+// Função para inicializar tudo ao carregar a página
 window.onload = function() {
     restoreState();
     loadSavedStates();

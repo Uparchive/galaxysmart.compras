@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Produtos</title>
+    <title>Gerenciador de Seções e Produtos</title>
     <!-- Link para o arquivo CSS externo -->
     <link rel="stylesheet" href="style.css">
     <!-- Link para a fonte Montserrat -->
@@ -11,37 +11,45 @@
 </head>
 <body>
 
-<h2>Lista de Produtos</h2>
-<div class="add-section">
-    <input type="text" id="newSectionName" placeholder="Nome da Seção">
-    <button onclick="addSection()">Adicionar Seção</button>
-</div>
-<div id="sections"></div>
-<div class="button-group-main">
-    <button onclick="generateReport()">Gerar Relatório</button>
-    <button onclick="saveOnline()">Salvar Online</button>
-    <button class="toggle-saves-btn" onclick="toggleOnlineSaves()">
-        Histórico Online
-        <span class="arrow">&#9660;</span>
-    </button>
-</div>
-<div id="report"></div>
+    <h2>Gerenciador de Seções e Produtos</h2>
 
-<!-- Lista de salvamentos online -->
-<div id="onlineSavesSection">
-    <h2>Histórico Online</h2>
-    <div class="saved-cards" id="savedCards"></div>
-</div>
+    <!-- Formulário para adicionar novas seções -->
+    <div class="add-section">
+        <input type="text" id="newSectionName" placeholder="Nome da Seção">
+        <button onclick="addSection()">Adicionar Seção</button>
+    </div>
 
-<!-- Inclua os scripts do Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-database-compat.js"></script>
+    <!-- Botões principais -->
+    <div class="button-group-main">
+        <button onclick="generateReport()">Gerar Relatório</button>
+        <button onclick="saveOnline()">Salvar Online</button>
+        <button class="toggle-saves-btn" onclick="toggleOnlineSaves()">
+            Histórico Online
+            <span class="arrow">&#9660;</span>
+        </button>
+    </div>
 
-<!-- Inclua o script do SortableJS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <!-- Container para as seções -->
+    <div id="sections"></div>
 
-<!-- Inclua o arquivo JavaScript externo -->
-<script src="script.js"></script>
+    <!-- Relatório -->
+    <div id="report"></div>
+
+    <!-- Lista de salvamentos online -->
+    <div id="onlineSavesSection" style="display: none;">
+        <h2>Histórico Online</h2>
+        <div class="saved-cards" id="savedCards"></div>
+    </div>
+
+    <!-- Scripts do Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-database-compat.js"></script>
+
+    <!-- Script do SortableJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
+    <!-- Arquivo JavaScript externo -->
+    <script src="script.js"></script>
 
 </body>
 </html>
