@@ -1,6 +1,6 @@
 /* style.css */
 
-/* Estilos globais */
+/* Estilos Globais */
 body {
     font-family: 'Montserrat', sans-serif;
     background-color: #1e1e1e;
@@ -397,4 +397,18 @@ input[type="number"] {
     margin-top: 20px;
     font-size: 16px;
     color: #00e676;
+}
+
+/* Estilos para o Contêiner de Botões da Seção */
+.section-buttons {
+    display: flex;
+    gap: 10px; /* Espaçamento entre os botões */
+    flex-wrap: nowrap; /* Evita que os botões quebrem para a próxima linha */
+    margin-bottom: 15px; /* Espaço abaixo dos botões */
+}
+
+/* Definir Larguras Consistentes para os Botões */
+.section-buttons button {
+    flex: 1; /* Faz com que todos os botões tenham a mesma largura */
+    min-width: 100px; /* Largura mínima para evitar que os botões fiquem muito estreitos */
 }

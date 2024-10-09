@@ -150,9 +150,11 @@ function addSectionToDOM(name, items, isFixed) {
     const sectionDiv = document.createElement('div');
     sectionDiv.classList.add('section');
     sectionDiv.innerHTML = `<h2>${name}</h2>
-        <button class="discard-section-btn" onclick="discardSection(event, '${name}')">Descartar Seção</button>
-        <button class="edit-section-btn" onclick="editSectionName(event, '${name}')">Editar Seção</button>
-        <button class="pin-section-btn" onclick="toggleFixSection('${name}')">${isFixed ? 'Destravar Seção' : 'Fixar Seção'}</button>
+        <div class="section-buttons"> <!-- Contêiner Flex para os Botões -->
+            <button class="discard-section-btn" onclick="discardSection(event, '${name}')">Descartar Seção</button>
+            <button class="edit-section-btn" onclick="editSectionName(event, '${name}')">Editar Seção</button>
+            <button class="pin-section-btn" onclick="toggleFixSection('${name}')">${isFixed ? 'Destravar Seção' : 'Fixar Seção'}</button>
+        </div>
         <ul class="sortable" data-section-name="${name}"></ul>
         <div class="add-item">
             <input type="number" placeholder="Qtd Estoque" class="newItemStock">
