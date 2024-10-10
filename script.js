@@ -546,6 +546,38 @@ function generateReport() {
     });
     document.getElementById('report').innerHTML = reportHTML;
     document.getElementById('report').scrollIntoView({ behavior: 'smooth' }); // Rola até o relatório
+
+    // Cria botão para download do relatório em PDF
+    const downloadButton = document.createElement('button');
+    downloadButton.innerText = 'Baixar Relatório em PDF';
+    downloadButton.onclick = generatePDF;
+    document.getElementById('report').appendChild(downloadButton);
+}
+
+function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    let y = 10; // Posição Y inicial no PDF
+    doc.setFontSize(16);
+    doc.text('Relatório de Produtos', 10, y);
+    y += 10;
+
+    sections.forEach(section => {
+        doc.setFontSize(14);
+        doc.text(`${section.name}:`, 10, y);
+        y += 10;
+        section.items.forEach(item => {
+            if (item.purchased > 0) {
+                doc.setFontSize(12);
+                doc.text(`(${item.purchased}) - ${item.name} - (${item.store})`, 10, y);
+                y += 10;
+            }
+        });
+        y += 5;
+    });
+
+    doc.save('relatorio_de_compras.pdf');
 }
 
 // Função para salvar o estado atual online (Firebase)
@@ -725,4 +757,5 @@ function scrollToTop() {
         behavior: 'smooth' // Faz a rolagem suave até o topo
     });
 }
+
 
