@@ -149,12 +149,14 @@ function addSectionToDOM(name, items, isFixed) {
     if (!sectionsContainer) return;
     const sectionDiv = document.createElement('div');
     sectionDiv.classList.add('section');
-    sectionDiv.innerHTML = `<h2>${name}</h2>
-        <div class="section-buttons"> <!-- Contêiner Flex para os Botões -->
+    sectionDiv.innerHTML = `
+        <h2>${name}</h2>
+        <div class="section-buttons">
             <button class="discard-section-btn" onclick="discardSection(event, '${name}')">Descartar Seção</button>
             <button class="edit-section-btn" onclick="editSectionName(event, '${name}')">Editar Seção</button>
             <button class="pin-section-btn" onclick="toggleFixSection('${name}')">${isFixed ? 'Destravar Seção' : 'Fixar Seção'}</button>
         </div>
+        <input type="text" class="search-bar" placeholder="Pesquisar na seção..." onkeyup="filterItems(event, '${name}')">
         <ul class="sortable" data-section-name="${name}"></ul>
         <div class="add-item">
             <input type="number" placeholder="Qtd Estoque" class="newItemStock">
@@ -171,7 +173,6 @@ function addSectionToDOM(name, items, isFixed) {
         ulElement.classList.add('fixed');
     }
 
-    // Converter items em array se for um objeto
     if (!items) {
         items = [];
     } else if (!Array.isArray(items)) {
@@ -187,6 +188,29 @@ function addSectionToDOM(name, items, isFixed) {
 
     initializeSortable(ulElement, isFixed);
 }
+
+function filterItems(event, sectionName) {
+    const searchTerm = event.target.value.toLowerCase();
+    const section = sections.find(s => s.name === sectionName);
+    if (!section) return;
+
+    const sectionDiv = event.target.closest('.section');
+    const itemsList = sectionDiv.querySelector('ul');
+    const listItems = itemsList.querySelectorAll('li');
+
+    listItems.forEach(item => {
+        const itemName = item.querySelector('.item-name').textContent.toLowerCase();
+        const itemStore = item.querySelector('.item-store').textContent.toLowerCase();
+        const itemSupplier = item.querySelector('.item-details span:nth-child(3)').textContent.toLowerCase(); // Inclui o campo de fornecedor
+
+        if (itemName.includes(searchTerm) || itemStore.includes(searchTerm) || itemSupplier.includes(searchTerm)) {
+            item.style.display = "";
+        } else {
+            item.style.display = "none";
+        }
+    });
+}
+
 
 // Função para alternar o estado fixado de uma seção
 function toggleFixSection(sectionName) {
@@ -215,37 +239,65 @@ function toggleFixSection(sectionName) {
 
 // Função para adicionar um item a uma seção
 function addItem(event, sectionName) {
+    // Localiza a seção alvo
     const sectionDiv = event.target.closest('.section');
     if (!sectionDiv) return;
-    const itemStockInput = sectionDiv.querySelector('.newItemStock');
+
+    // Captura os valores dos inputs
     const itemNameInput = sectionDiv.querySelector('.newItemName');
-    const itemRequestedInput = sectionDiv.querySelector('.newItemRequested');
     const itemStoreInput = sectionDiv.querySelector('.newItemStore');
-    const itemStock = parseInt(itemStockInput.value) || 0;
+    const itemStockInput = sectionDiv.querySelector('.newItemStock');
+    const itemRequestedInput = sectionDiv.querySelector('.newItemRequested');
+    const itemSupplierInput = sectionDiv.querySelector('.newItemSupplier');
+
+    // Verifica se todos os campos necessários estão preenchidos
+    if (!itemNameInput || !itemStoreInput || !itemStockInput || !itemRequestedInput || !itemSupplierInput) {
+        console.error("Algum dos campos do formulário não foi encontrado.");
+        return;
+    }
+
+    // Captura os valores dos inputs
     const itemName = itemNameInput.value.trim();
-    const itemRequested = parseInt(itemRequestedInput.value) || 0;
     const itemStore = itemStoreInput.value.trim();
+    const itemStock = parseInt(itemStockInput.value) || 0;
+    const itemRequested = parseInt(itemRequestedInput.value) || 0;
+    const itemSupplier = itemSupplierInput.value.trim();
+
+    // Cria um identificador único para o item
     const uniqueId = `${itemName}-${itemStore}-${Date.now()}`;
 
+    // Verifica se o nome do produto e a loja foram preenchidos
     if (itemName && itemStore) {
         const section = sections.find(s => s.name === sectionName);
         if (!section) return;
+
+        // Cria um novo item
         const newItem = {
             name: itemName,
+            store: itemStore,
             stock: itemStock,
             requested: itemRequested,
-            store: itemStore,
+            supplier: itemSupplier,
             purchased: 0,
             uniqueId: uniqueId
         };
+
+        // Adiciona o novo item à seção correspondente
         section.items.push(newItem);
+
+        // Atualiza o DOM
         const ulElement = sectionDiv.querySelector('ul');
         ulElement.classList.remove('placeholder');
         addItemToDOM(ulElement, newItem, sectionName);
-        itemStockInput.value = '';
+
+        // Limpa os valores dos inputs após adicionar o item
         itemNameInput.value = '';
-        itemRequestedInput.value = '';
         itemStoreInput.value = '';
+        itemStockInput.value = '';
+        itemRequestedInput.value = '';
+        itemSupplierInput.value = '';
+
+        // Salva o estado atualizado
         saveState();
     } else {
         alert('Por favor, insira um nome para o produto e uma loja.');
@@ -264,6 +316,7 @@ function addItemToDOM(ulElement, item, sectionName) {
             <div class="item-details">
                 <span>Est: ${item.stock}</span>
                 <span>Ped: ${item.requested}</span>
+                <span>Forn: ${item.supplier || 'Não especificado'}</span> <!-- Adiciona o fornecedor -->
             </div>
         </div>
         <div class="button-group">
@@ -305,6 +358,7 @@ function editItem(event, sectionName, uniqueId) {
             editForm.innerHTML = `
                 <input type="text" placeholder="Nome" value="${item.name}" class="edit-name">
                 <input type="text" placeholder="Loja" value="${item.store}" class="edit-store">
+                <input type="text" placeholder="Fornecedor" value="${item.supplier || ''}" class="edit-supplier"> <!-- Novo campo para fornecedor -->
                 <input type="number" min="0" placeholder="Estoque" value="${item.stock}" class="edit-stock">
                 <input type="number" min="0" placeholder="Pedido" value="${item.requested}" class="edit-requested">
                 <div class="edit-form-buttons">
@@ -325,11 +379,13 @@ function saveEditItem(event, sectionName, uniqueId) {
     if (!listItem) return;
     const nameInput = listItem.querySelector('.edit-name');
     const storeInput = listItem.querySelector('.edit-store');
+    const supplierInput = listItem.querySelector('.edit-supplier'); // Novo campo para fornecedor
     const stockInput = listItem.querySelector('.edit-stock');
     const requestedInput = listItem.querySelector('.edit-requested');
 
     const updatedName = nameInput.value.trim();
     const updatedStore = storeInput.value.trim();
+    const updatedSupplier = supplierInput.value.trim();
     const updatedStock = stockInput.value.trim();
     const updatedRequested = requestedInput.value.trim();
 
@@ -354,6 +410,7 @@ function saveEditItem(event, sectionName, uniqueId) {
         if (itemIndex !== -1) {
             sections[sectionIndex].items[itemIndex].name = updatedName;
             sections[sectionIndex].items[itemIndex].store = updatedStore;
+            sections[sectionIndex].items[itemIndex].supplier = updatedSupplier; // Atualiza o fornecedor
             sections[sectionIndex].items[itemIndex].stock = parseInt(updatedStock) || 0;
             sections[sectionIndex].items[itemIndex].requested = parseInt(updatedRequested) || 0;
             saveState();
@@ -478,38 +535,20 @@ function updatePurchased(event, sectionName, uniqueId) {
 
 // Função para gerar um relatório dos itens comprados
 function generateReport() {
-    const reportContainer = document.getElementById('report');
-    if (!reportContainer) return;
-    reportContainer.innerHTML = '<h3>Relatório de Compras:</h3>';
-
-    const markedItems = sections.flatMap(section => {
-        // Garantir que section.items seja um array
-        let items = section.items || [];
-        if (!Array.isArray(items)) {
-            items = Object.values(items);
-        }
-        return items.filter(item => item.purchased > 0);
-    });
-
-    if (markedItems.length > 0) {
-        const ul = document.createElement('ul');
-        markedItems.forEach(item => {
-            const li = document.createElement('li');
-            li.textContent = `${item.purchased} - ${item.name} - ${item.store}`;
-            ul.appendChild(li);
+    let reportHTML = '<h2>Relatório de Produtos</h2>';
+    sections.forEach(section => {
+        reportHTML += `<h3>Seção: ${section.name}</h3><ul>`;
+        section.items.forEach(item => {
+            reportHTML += `
+                <li>
+                    Produto: ${item.name} | Estoque: ${item.stock} | Pedido: ${item.requested} | 
+                    Loja: ${item.store} | Fornecedor: ${item.supplier || 'Não especificado'}
+                </li>
+            `;
         });
-        reportContainer.appendChild(ul);
-    } else {
-        reportContainer.innerHTML += '<p>Nenhum item foi marcado como comprado.</p>';
-    }
-
-    // Scroll automático para a seção de relatório
-    const reportSection = document.getElementById('report');
-    if (reportSection) {
-        reportSection.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    updateTotalItemCount(); // Atualiza a contagem total após gerar o relatório
+        reportHTML += `</ul>`;
+    });
+    document.getElementById('report').innerHTML = reportHTML;
 }
 
 // Função para salvar o estado atual online (Firebase)

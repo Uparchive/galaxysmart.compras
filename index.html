@@ -57,5 +57,78 @@
     <!-- Arquivo JavaScript externo -->
     <script src="script.js"></script>
 
+    <script>
+        // Função para adicionar um item com o campo de fornecedor opcional
+        function addItem(event, sectionName) {
+            // Localiza a seção alvo
+            const sectionDiv = event.target.closest('.section');
+            if (!sectionDiv) return;
+
+            // Captura os valores dos inputs
+            const itemNameInput = sectionDiv.querySelector('.newItemName');
+            const itemStoreInput = sectionDiv.querySelector('.newItemStore');
+            const itemStockInput = sectionDiv.querySelector('.newItemStock');
+            const itemRequestedInput = sectionDiv.querySelector('.newItemRequested');
+            const itemSupplierInput = sectionDiv.querySelector('.newItemSupplier');
+
+            // Verifica se todos os campos necessários estão preenchidos
+            if (!itemNameInput || !itemStoreInput || !itemStockInput || !itemRequestedInput) {
+                console.error("Algum dos campos do formulário não foi encontrado.");
+                return;
+            }
+
+            // Captura os valores dos inputs
+            const itemName = itemNameInput.value.trim();
+            const itemStore = itemStoreInput.value.trim();
+            const itemStock = parseInt(itemStockInput.value) || 0;
+            const itemRequested = parseInt(itemRequestedInput.value) || 0;
+            const itemSupplier = itemSupplierInput ? itemSupplierInput.value.trim() : "";
+
+            // Cria um identificador único para o item
+            const uniqueId = `${itemName}-${itemStore}-${Date.now()}`;
+
+            // Verifica se o nome do produto e a loja foram preenchidos
+            if (itemName && itemStore) {
+                const section = sections.find(s => s.name === sectionName);
+                if (!section) return;
+
+                // Cria um novo item
+                const newItem = {
+                    name: itemName,
+                    store: itemStore,
+                    stock: itemStock,
+                    requested: itemRequested,
+                    supplier: itemSupplier,
+                    purchased: 0,
+                    uniqueId: uniqueId
+                };
+
+                // Adiciona o novo item à seção correspondente
+                section.items.push(newItem);
+
+                // Atualiza o DOM
+                let ulElement = sectionDiv.querySelector('ul');
+                if (!ulElement) {
+                    ulElement = document.createElement('ul');
+                    sectionDiv.appendChild(ulElement);
+                }
+                ulElement.classList.remove('placeholder');
+                addItemToDOM(ulElement, newItem, sectionName);
+
+                // Limpa os valores dos inputs após adicionar o item
+                itemNameInput.value = '';
+                itemStoreInput.value = '';
+                itemStockInput.value = '';
+                itemRequestedInput.value = '';
+                if (itemSupplierInput) itemSupplierInput.value = '';
+
+                // Salva o estado atualizado
+                saveState();
+            } else {
+                alert('Por favor, insira um nome para o produto e uma loja.');
+            }
+        }
+    </script>
+
 </body>
 </html>
