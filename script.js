@@ -211,7 +211,6 @@ function filterItems(event, sectionName) {
     });
 }
 
-
 // Função para alternar o estado fixado de uma seção
 function toggleFixSection(sectionName) {
     const section = sections.find(s => s.name === sectionName);
@@ -537,18 +536,16 @@ function updatePurchased(event, sectionName, uniqueId) {
 function generateReport() {
     let reportHTML = '<h2>Relatório de Produtos</h2>';
     sections.forEach(section => {
-        reportHTML += `<h3>Seção: ${section.name}</h3><ul>`;
+        reportHTML += `<h3>${section.name}:</h3><ul>`;
         section.items.forEach(item => {
-            reportHTML += `
-                <li>
-                    Produto: ${item.name} | Estoque: ${item.stock} | Pedido: ${item.requested} | 
-                    Loja: ${item.store} | Fornecedor: ${item.supplier || 'Não especificado'}
-                </li>
-            `;
+            if (item.purchased > 0) { // Considera apenas os itens comprados
+                reportHTML += `<li>(${item.purchased}) - ${item.name} - (${item.store})</li>`;
+            }
         });
         reportHTML += `</ul>`;
     });
     document.getElementById('report').innerHTML = reportHTML;
+    document.getElementById('report').scrollIntoView({ behavior: 'smooth' }); // Rola até o relatório
 }
 
 // Função para salvar o estado atual online (Firebase)
@@ -708,3 +705,24 @@ window.onload = function() {
     restoreState();
     loadSavedStates();
 };
+
+window.onscroll = function() {
+    toggleScrollToTopButton();
+};
+
+function toggleScrollToTopButton() {
+    const btn = document.getElementById("scrollToTopBtn");
+    if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+        btn.style.display = "block"; // Mostra o botão quando rola mais de 100px
+    } else {
+        btn.style.display = "none"; // Oculta o botão se voltar ao topo
+    }
+}
+
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth' // Faz a rolagem suave até o topo
+    });
+}
+
