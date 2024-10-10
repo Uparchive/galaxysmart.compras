@@ -9,6 +9,35 @@
     <!-- Link para a fonte Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        .button-group-main {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .button-group-main button {
+            flex: 1 1 calc(25% - 10px);
+            min-width: 100px;
+            padding: 10px;
+            background: linear-gradient(135deg, #ff8c42, #ff6b00);
+            color: #1c1c2b;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .button-group-main button:hover {
+            background: linear-gradient(135deg, #ff6b00, #ff8c42);
+            transform: scale(1.05);
+        }
+
+        .button-group-main button:active {
+            transform: scale(0.95);
+        }
+
         .section-buttons {
             display: flex;
             flex-wrap: wrap;
@@ -77,7 +106,7 @@
     <div class="button-group-main">
         <button onclick="generateReport()">Gerar Relatório</button>
         <button onclick="saveOnline()">Salvar Online</button>
-        <button onclick="organizeBySimilarity()">Organizar por Similaridade</button> <!-- Botão Adicionado -->
+        <button onclick="organizeBySimilarity()">Organizar por Similaridade</button>
         <button class="toggle-saves-btn" onclick="toggleOnlineSaves()">
             Histórico Online
             <span class="arrow">▼</span>
@@ -116,41 +145,33 @@
     <script src="script.js"></script>
 
     <script>
-        // Função para adicionar um item com o campo de fornecedor opcional
         function addItem(event, sectionName) {
-            // Localiza a seção alvo
             const sectionDiv = event.target.closest('.section');
             if (!sectionDiv) return;
 
-            // Captura os valores dos inputs
             const itemNameInput = sectionDiv.querySelector('.newItemName');
             const itemStoreInput = sectionDiv.querySelector('.newItemStore');
             const itemStockInput = sectionDiv.querySelector('.newItemStock');
             const itemRequestedInput = sectionDiv.querySelector('.newItemRequested');
             const itemSupplierInput = sectionDiv.querySelector('.newItemSupplier');
 
-            // Verifica se todos os campos necessários estão preenchidos
             if (!itemNameInput || !itemStoreInput || !itemStockInput || !itemRequestedInput) {
                 console.error("Algum dos campos do formulário não foi encontrado.");
                 return;
             }
 
-            // Captura os valores dos inputs
             const itemName = itemNameInput.value.trim();
             const itemStore = itemStoreInput.value.trim();
             const itemStock = parseInt(itemStockInput.value) || 0;
             const itemRequested = parseInt(itemRequestedInput.value) || 0;
             const itemSupplier = itemSupplierInput ? itemSupplierInput.value.trim() : "";
 
-            // Cria um identificador único para o item
             const uniqueId = `${itemName}-${itemStore}-${Date.now()}`;
 
-            // Verifica se o nome do produto e a loja foram preenchidos
             if (itemName && itemStore) {
                 const section = sections.find(s => s.name === sectionName);
                 if (!section) return;
 
-                // Cria um novo item
                 const newItem = {
                     name: itemName,
                     store: itemStore,
@@ -161,10 +182,8 @@
                     uniqueId: uniqueId
                 };
 
-                // Adiciona o novo item à seção correspondente
                 section.items.push(newItem);
 
-                // Atualiza o DOM
                 let ulElement = sectionDiv.querySelector('ul');
                 if (!ulElement) {
                     ulElement = document.createElement('ul');
@@ -173,21 +192,18 @@
                 ulElement.classList.remove('placeholder');
                 addItemToDOM(ulElement, newItem, sectionName);
 
-                // Limpa os valores dos inputs após adicionar o item
                 itemNameInput.value = '';
                 itemStoreInput.value = '';
                 itemStockInput.value = '';
                 itemRequestedInput.value = '';
                 if (itemSupplierInput) itemSupplierInput.value = '';
 
-                // Salva o estado atualizado
                 saveState();
             } else {
                 alert('Por favor, insira um nome para o produto e uma loja.');
             }
         }
 
-        // Função para mostrar o botão de rolar para o topo
         window.onscroll = function() {
             toggleScrollToTopButton();
         };
@@ -195,18 +211,43 @@
         function toggleScrollToTopButton() {
             const btn = document.getElementById("scrollToTopBtn");
             if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-                btn.style.display = "block"; // Mostra o botão quando rola mais de 100px
+                btn.style.display = "block";
             } else {
-                btn.style.display = "none"; // Oculta o botão se voltar ao topo
+                btn.style.display = "none";
             }
         }
 
-        // Função para rolar suavemente até o topo
         function scrollToTop() {
             window.scrollTo({
                 top: 0,
-                behavior: 'smooth' // Faz a rolagem suave até o topo
+                behavior: 'smooth'
             });
+        }
+
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            let y = 10;
+            doc.setFontSize(16);
+            doc.text('Relatório de Produtos', 10, y);
+            y += 10;
+
+            sections.forEach(section => {
+                doc.setFontSize(14);
+                doc.text(`${section.name}:`, 10, y);
+                y += 10;
+                section.items.forEach(item => {
+                    if (item.purchased > 0) {
+                        doc.setFontSize(12);
+                        doc.text(`(${item.purchased}) - ${item.name} - (${item.store})`, 10, y);
+                        y += 10;
+                    }
+                });
+                y += 5;
+            });
+
+            doc.save('relatorio_de_compras.pdf');
         }
     </script>
 
