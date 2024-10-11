@@ -567,46 +567,98 @@ function generateReport() {
     sections.forEach(section => {
         reportHTML += `<h3>${section.name}:</h3><ul>`;
         section.items.forEach(item => {
-            if (item.purchased > 0) { // Considera apenas os itens comprados
+            if (item.purchased > 0) {
                 reportHTML += `<li>(${item.purchased}) - ${item.name} - (${item.store})</li>`;
             }
         });
         reportHTML += `</ul>`;
     });
     document.getElementById('report').innerHTML = reportHTML;
-    document.getElementById('report').scrollIntoView({ behavior: 'smooth' }); // Rola até o relatório
+    document.getElementById('report').scrollIntoView({ behavior: 'smooth' });
 
-    // Cria botão para download do relatório em PDF
-    const downloadButton = document.createElement('button');
-    downloadButton.innerText = 'Baixar Relatório em PDF';
-    downloadButton.onclick = generatePDF;
-    document.getElementById('report').appendChild(downloadButton);
+    // Torna visível o botão de download após gerar o relatório
+    document.getElementById('downloadSection').style.display = 'block';
 }
 
-function generatePDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+function generateExcel() {
+    const workbook = XLSX.utils.book_new();
 
-    let y = 10; // Posição Y inicial no PDF
-    doc.setFontSize(16);
-    doc.text('Relatório de Produtos', 10, y);
-    y += 10;
+    // Verifica se há seções disponíveis
+    if (sections.length === 0) {
+        alert('Nenhuma seção disponível para exportação.');
+        return;
+    }
 
+    // Itera sobre cada seção para criar uma planilha correspondente
     sections.forEach(section => {
-        doc.setFontSize(14);
-        doc.text(`${section.name}:`, 10, y);
-        y += 10;
-        section.items.forEach(item => {
-            if (item.purchased > 0) {
-                doc.setFontSize(12);
-                doc.text(`(${item.purchased}) - ${item.name} - (${item.store})`, 10, y);
-                y += 10;
-            }
-        });
-        y += 5;
+        // Verifica se há itens na seção e prepara os dados para a planilha
+        const worksheetData = section.items && section.items.length > 0
+            ? section.items.map(item => ({
+                'Produto': item.name,
+                'Loja': item.store,
+                'Quantidade Comprada': item.purchased,
+                'Estoque': item.stock,
+                'Fornecedor': item.supplier || 'Não especificado'
+            }))
+            : [{ 'Mensagem': 'Nenhum item disponível' }]; // Mensagem padrão para seções sem itens
+
+        // Cria uma nova planilha a partir dos dados
+        const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+
+        // Define a largura das colunas para melhorar a legibilidade
+        const colWidths = [
+            { wch: 30 }, // Largura da coluna "Produto" ou "Mensagem"
+            { wch: 20 }, // Largura da coluna "Loja"
+            { wch: 18 }, // Largura da coluna "Quantidade Comprada"
+            { wch: 15 }, // Largura da coluna "Estoque"
+            { wch: 25 }  // Largura da coluna "Fornecedor"
+        ];
+        worksheet['!cols'] = colWidths;
+
+        // Adiciona a planilha ao workbook, utilizando o nome da seção ou um padrão
+        const sheetName = section.name ? section.name.substring(0, 31) : 'Seção';
+        XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
     });
 
-    doc.save('relatorio_de_compras.pdf');
+    // Salva o workbook em um arquivo Excel
+    XLSX.writeFile(workbook, 'relatorio_de_compras.xlsx');
+}
+
+function copyReportToClipboard() {
+    const reportElement = document.getElementById('report');
+    if (!reportElement || reportElement.innerText.trim() === '') {
+        alert('O relatório está vazio. Por favor, gere o relatório primeiro.');
+        return;
+    }
+
+    // Cria uma string que armazenará o texto do relatório
+    let reportText = '';
+
+    // Itera sobre cada seção do relatório, adicionando parágrafos entre elas
+    sections.forEach(section => {
+        reportText += `\n${section.name}:\n\n`; // Adiciona o nome da seção com duas quebras de linha
+        section.items.forEach(item => {
+            if (item.purchased > 0) {
+                reportText += `(${item.purchased}) - ${item.name} - (${item.store})\n`;
+            }
+        });
+        reportText += '\n'; // Adiciona uma quebra de linha entre as seções para espaçamento
+    });
+
+    // Cria um elemento temporário para copiar o texto
+    const tempTextArea = document.createElement('textarea');
+    tempTextArea.value = reportText.trim(); // Remove espaços em excesso antes e depois do texto
+    document.body.appendChild(tempTextArea);
+
+    // Seleciona o conteúdo e copia para a área de transferência
+    tempTextArea.select();
+    document.execCommand('copy');
+
+    // Remove o elemento temporário
+    document.body.removeChild(tempTextArea);
+
+    // Alerta o usuário que o texto foi copiado
+    alert('Relatório copiado para a área de transferência!');
 }
 
 // Função para salvar o estado atual online (Firebase)

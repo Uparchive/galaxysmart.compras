@@ -96,6 +96,32 @@
         #scrollToTopBtn:active {
             transform: scale(0.95);
         }
+
+        #downloadSection {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #downloadSection button {
+            padding: 10px;
+            background: linear-gradient(135deg, #ff8c42, #ff6b00);
+            color: #1c1c2b;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        #downloadSection button:hover {
+            background: linear-gradient(135deg, #ff6b00, #ff8c42);
+            transform: scale(1.05);
+        }
+
+        #downloadSection button:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body>
@@ -127,8 +153,12 @@
     <!-- Container para as seções -->
     <div id="sections"></div>
 
-    <!-- Relatório -->
-    <div id="report"></div>
+<!-- Relatório -->
+<div id="report"></div>
+<div id="downloadSection" style="display: none; text-align: center; margin-top: 20px;">
+    <button onclick="copyReportToClipboard()">Copiar Relatório</button>
+</div>
+
 
     <!-- Lista de salvamentos online -->
     <div id="onlineSavesSection" style="display: none;">
@@ -143,7 +173,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-database-compat.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Biblioteca SheetJS para exportar Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 
@@ -210,6 +241,49 @@
             }
         }
 
+        function generateReport() {
+            let reportHTML = '<h2>Relatório de Produtos</h2>';
+            sections.forEach(section => {
+                reportHTML += `<h3>${section.name}:</h3><ul>`;
+                section.items.forEach(item => {
+                    if (item.purchased > 0) {
+                        reportHTML += `<li>(${item.purchased}) - ${item.name} - (${item.store})</li>`;
+                    }
+                });
+                reportHTML += `</ul>`;
+            });
+            document.getElementById('report').innerHTML = reportHTML;
+            document.getElementById('report').scrollIntoView({ behavior: 'smooth' });
+
+            // Torna visível o botão de download após gerar o relatório
+            document.getElementById('downloadSection').style.display = 'block';
+        }
+
+        function generateExcel() {
+            const workbook = XLSX.utils.book_new();
+
+            sections.forEach(section => {
+                const worksheetData = section.items.map(item => ({
+                    'Produto': item.name,
+                    'Loja': item.store,
+                    'Quantidade Comprada': item.purchased,
+                    'Estoque': item.stock,
+                    'Fornecedor': item.supplier || 'Não especificado'
+                }));
+
+                const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+
+                const colWidths = [
+                    { wch: 30 }, { wch: 20 }, { wch: 18 }, { wch: 15 }, { wch: 25 }
+                ];
+                worksheet['!cols'] = colWidths;
+
+                XLSX.utils.book_append_sheet(workbook, worksheet, section.name);
+            });
+
+            XLSX.writeFile(workbook, 'relatorio_de_compras.xlsx');
+        }
+
         window.onscroll = function() {
             toggleScrollToTopButton();
         };
@@ -228,32 +302,6 @@
                 top: 0,
                 behavior: 'smooth'
             });
-        }
-
-        function generatePDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            let y = 10;
-            doc.setFontSize(16);
-            doc.text('Relatório de Produtos', 10, y);
-            y += 10;
-
-            sections.forEach(section => {
-                doc.setFontSize(14);
-                doc.text(`${section.name}:`, 10, y);
-                y += 10;
-                section.items.forEach(item => {
-                    if (item.purchased > 0) {
-                        doc.setFontSize(12);
-                        doc.text(`(${item.purchased}) - ${item.name} - (${item.store})`, 10, y);
-                        y += 10;
-                    }
-                });
-                y += 5;
-            });
-
-            doc.save('relatorio_de_compras.pdf');
         }
     </script>
 
