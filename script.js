@@ -59,25 +59,6 @@ function toggleRiscado(event, uniqueId) {
     saveState();
 }
 
-// Função para Ocultar/Mostrar Lista das Seções
-function toggleSectionVisibility(event) {
-    const sectionDiv = event.target.closest('.section');
-    const contentElements = sectionDiv.querySelectorAll('.section-buttons, .search-bar, ul, .add-item');
-    const arrow = event.target.querySelector('.arrow-icon');
-
-    // Verifica se a seção está atualmente visível (usando um atributo de dados)
-    const isHidden = sectionDiv.getAttribute('data-hidden') === 'true';
-
-    // Alterna a visibilidade dos elementos e o estado do atributo
-    contentElements.forEach(element => {
-        element.style.display = isHidden ? 'block' : 'none';
-    });
-    sectionDiv.setAttribute('data-hidden', isHidden ? 'false' : 'true');
-
-    // Atualiza a seta de acordo com o estado
-    arrow.textContent = isHidden ? '▼' : '▲'; // ▼ para visível, ▲ para oculto
-}
-
 // Função para descartar um item
 function discardItem(event, sectionName, uniqueId) {
     const section = sections.find(s => s.name === sectionName);
@@ -166,25 +147,17 @@ function addSection() {
 function addSectionToDOM(name, items, isFixed) {
     const sectionsContainer = document.getElementById('sections');
     if (!sectionsContainer) return;
-
     const sectionDiv = document.createElement('div');
     sectionDiv.classList.add('section');
-    sectionDiv.setAttribute('data-hidden', 'false'); // Seção começa visível
-
     sectionDiv.innerHTML = `
-        <h2>
-            ${name}
-            <button class="toggle-section-btn" onclick="toggleSectionVisibility(event)">
-                <span class="arrow-icon">▼</span>
-            </button>
-        </h2>
+        <h2>${name}</h2>
         <div class="section-buttons">
             <button class="discard-section-btn" onclick="discardSection(event, '${name}')">Descartar Seção</button>
             <button class="edit-section-btn" onclick="editSectionName(event, '${name}')">Editar Seção</button>
             <button class="pin-section-btn" onclick="toggleFixSection('${name}')">${isFixed ? 'Destravar Seção' : 'Fixar Seção'}</button>
         </div>
         <input type="text" class="search-bar" placeholder="Pesquisar na seção..." onkeyup="filterItems(event, '${name}')">
-        <ul class="sortable" data-section-name="${name}" style="display: block;"></ul>
+        <ul class="sortable" data-section-name="${name}"></ul>
         <div class="add-item">
             <input type="number" placeholder="Qtd Estoque" class="newItemStock">
             <input type="text" placeholder="Nome do Produto" class="newItemName">
@@ -192,14 +165,23 @@ function addSectionToDOM(name, items, isFixed) {
             <input type="text" placeholder="Loja" class="newItemStore">
             <button onclick="addItem(event, '${name}')">Adicionar Produto</button>
         </div>`;
-    
     sectionsContainer.appendChild(sectionDiv);
-
     const ulElement = sectionDiv.querySelector('ul');
+
+    // Adiciona a classe 'fixed' se a seção estiver fixada
+    if (isFixed) {
+        ulElement.classList.add('fixed');
+    }
+
+    if (!items) {
+        items = [];
+    } else if (!Array.isArray(items)) {
+        items = Object.values(items);
+    }
+
     if (items.length === 0) {
         ulElement.classList.add('placeholder');
     }
-
     items.forEach(item => {
         addItemToDOM(ulElement, item, name);
     });
@@ -775,3 +757,5 @@ function scrollToTop() {
         behavior: 'smooth' // Faz a rolagem suave até o topo
     });
 }
+
+
