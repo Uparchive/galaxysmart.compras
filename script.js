@@ -61,17 +61,18 @@ function toggleRiscado(event, uniqueId) {
 
 function toggleSectionVisibility(event, sectionName) {
     const sectionDiv = event.target.closest('.section');
-    const contentElements = sectionDiv.querySelectorAll('.section-buttons, .search-bar, ul, .add-item');
+    const elementsToToggle = sectionDiv.querySelectorAll('.section-buttons, .search-bar, ul');
     const arrow = event.target.querySelector('.arrow-icon');
 
-    // Alterna a visibilidade dos elementos
-    contentElements.forEach(element => {
+    // Alterna a visibilidade dos elementos que precisam ser ocultados
+    elementsToToggle.forEach(element => {
         element.style.display = element.style.display === 'none' ? 'block' : 'none';
     });
 
     // Alterna a seta do botão
-    arrow.textContent = contentElements[0].style.display === 'none' ? '▲' : '▼'; // Seta para cima quando oculto, para baixo quando visível
+    arrow.textContent = elementsToToggle[0].style.display === 'none' ? '▲' : '▼'; // Seta para cima quando oculto, para baixo quando visível
 }
+
 
 // Função para descartar um item
 function discardItem(event, sectionName, uniqueId) {
