@@ -61,18 +61,31 @@ function toggleRiscado(event, uniqueId) {
 
 function toggleSectionVisibility(event, sectionName) {
     const sectionDiv = event.target.closest('.section');
-    const elementsToToggle = sectionDiv.querySelectorAll('.section-buttons, .search-bar, ul');
-    const arrow = event.target.querySelector('.arrow-icon');
+    if (!sectionDiv) return;
 
-    // Alterna a visibilidade dos elementos que precisam ser ocultados
+    const elementsToToggle = sectionDiv.querySelectorAll('.section-buttons, .search-bar, ul');
+    const eyeIcon = sectionDiv.querySelector('.eye-icon'); // Procurar no contexto da seção toda
+
+    // Verifique se o eyeIcon foi encontrado antes de tentar modificar seu conteúdo
+    if (!eyeIcon) {
+        console.error('Eye icon not found for section:', sectionName);
+        return;
+    }
+
+    console.log('Toggling visibility for section:', sectionName);
+
+    // Alterna a visibilidade dos elementos utilizando a classe 'hidden'
+    let allHidden = true;
     elementsToToggle.forEach(element => {
-        element.style.display = element.style.display === 'none' ? 'block' : 'none';
+        element.classList.toggle('hidden');
+        if (!element.classList.contains('hidden')) {
+            allHidden = false;
+        }
     });
 
-    // Alterna a seta do botão
-    arrow.textContent = elementsToToggle[0].style.display === 'none' ? '▲' : '▼'; // Seta para cima quando oculto, para baixo quando visível
+    // Atualiza o ícone com base no estado atual dos elementos
+    eyeIcon.textContent = allHidden ? '🙈' : '👁️'; // Olho riscado quando oculto, olho normal quando visível
 }
-
 
 // Função para descartar um item
 function discardItem(event, sectionName, uniqueId) {
@@ -168,7 +181,7 @@ function addSectionToDOM(name, items, isFixed) {
         <h2>
             ${name}
             <button class="toggle-section-btn" onclick="toggleSectionVisibility(event, '${name}')">
-                <span class="arrow-icon">▼</span>
+                <span class="eye-icon">👁️</span>
             </button>
         </h2>
         <div class="section-buttons">

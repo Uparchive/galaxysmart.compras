@@ -566,6 +566,7 @@ input[type="number"]:focus {
 #report button:active {
     transform: scale(0.95);
 }
+
 .toggle-section-btn {
     background: none;
     border: none;
@@ -574,6 +575,8 @@ input[type="number"]:focus {
     font-size: 20px;
     transition: transform 0.3s ease;
     margin-left: 10px;
+    display: inline-flex;
+    align-items: center;
 }
 
 .toggle-section-btn:hover {
@@ -581,26 +584,12 @@ input[type="number"]:focus {
     transform: scale(1.1);
 }
 
-.arrow-icon {
-    font-size: 16px;
+.eye-icon {
+    font-size: 18px;
     transition: transform 0.3s ease;
-}
-.toggle-section-btn {
-    background: none;
-    border: none;
-    color: #ccc;
-    cursor: pointer;
-    font-size: 20px;
-    transition: transform 0.3s ease;
-    margin-left: 10px;
 }
 
-.toggle-section-btn:hover {
-    color: #fff;
-    transform: scale(1.1);
+.hidden {
+    display: none !important;
 }
 
-.arrow-icon {
-    font-size: 16px;
-    transition: transform 0.3s ease;
-}
