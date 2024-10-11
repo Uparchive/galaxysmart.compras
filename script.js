@@ -59,6 +59,20 @@ function toggleRiscado(event, uniqueId) {
     saveState();
 }
 
+function toggleSectionVisibility(event, sectionName) {
+    const sectionDiv = event.target.closest('.section');
+    const contentElements = sectionDiv.querySelectorAll('.section-buttons, .search-bar, ul, .add-item');
+    const arrow = event.target.querySelector('.arrow-icon');
+
+    // Alterna a visibilidade dos elementos
+    contentElements.forEach(element => {
+        element.style.display = element.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Alterna a seta do botão
+    arrow.textContent = contentElements[0].style.display === 'none' ? '▲' : '▼'; // Seta para cima quando oculto, para baixo quando visível
+}
+
 // Função para descartar um item
 function discardItem(event, sectionName, uniqueId) {
     const section = sections.find(s => s.name === sectionName);
@@ -150,14 +164,19 @@ function addSectionToDOM(name, items, isFixed) {
     const sectionDiv = document.createElement('div');
     sectionDiv.classList.add('section');
     sectionDiv.innerHTML = `
-        <h2>${name}</h2>
+        <h2>
+            ${name}
+            <button class="toggle-section-btn" onclick="toggleSectionVisibility(event, '${name}')">
+                <span class="arrow-icon">▼</span>
+            </button>
+        </h2>
         <div class="section-buttons">
             <button class="discard-section-btn" onclick="discardSection(event, '${name}')">Descartar Seção</button>
             <button class="edit-section-btn" onclick="editSectionName(event, '${name}')">Editar Seção</button>
             <button class="pin-section-btn" onclick="toggleFixSection('${name}')">${isFixed ? 'Destravar Seção' : 'Fixar Seção'}</button>
         </div>
         <input type="text" class="search-bar" placeholder="Pesquisar na seção..." onkeyup="filterItems(event, '${name}')">
-        <ul class="sortable" data-section-name="${name}"></ul>
+        <ul class="sortable" data-section-name="${name}" style="display: block;"></ul>
         <div class="add-item">
             <input type="number" placeholder="Qtd Estoque" class="newItemStock">
             <input type="text" placeholder="Nome do Produto" class="newItemName">
@@ -166,13 +185,8 @@ function addSectionToDOM(name, items, isFixed) {
             <button onclick="addItem(event, '${name}')">Adicionar Produto</button>
         </div>`;
     sectionsContainer.appendChild(sectionDiv);
+
     const ulElement = sectionDiv.querySelector('ul');
-
-    // Adiciona a classe 'fixed' se a seção estiver fixada
-    if (isFixed) {
-        ulElement.classList.add('fixed');
-    }
-
     if (!items) {
         items = [];
     } else if (!Array.isArray(items)) {
@@ -182,6 +196,7 @@ function addSectionToDOM(name, items, isFixed) {
     if (items.length === 0) {
         ulElement.classList.add('placeholder');
     }
+
     items.forEach(item => {
         addItemToDOM(ulElement, item, name);
     });
@@ -757,5 +772,4 @@ function scrollToTop() {
         behavior: 'smooth' // Faz a rolagem suave até o topo
     });
 }
-
 
