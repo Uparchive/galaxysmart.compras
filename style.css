@@ -566,3 +566,70 @@ input[type="number"]:focus {
 #report button:active {
     transform: scale(0.95);
 }
+.toggle-section-btn {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 20px;
+    transition: transform 0.3s ease;
+    margin-left: 10px;
+}
+
+.toggle-section-btn:hover {
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.arrow-icon {
+    font-size: 16px;
+    transition: transform 0.3s ease;
+}
+.arrow-icon {
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+.add-item {
+    display: flex;
+    flex-wrap: nowrap; /* Garante que os elementos permaneçam em uma linha */
+    gap: 10px; /* Espaço entre os itens */
+}
+
+.add-item input {
+    flex: 1;
+    min-width: 150px; /* Ajuste conforme necessário */
+}
+
+.add-item button {
+    flex: 0 0 auto; /* O botão mantém o tamanho mínimo */
+    min-width: 180px; /* Mantém o botão de adicionar com tamanho fixo */
+}
+.add-item {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    align-items: center;
+}
+
+.add-item input {
+    padding: 10px;
+    border-radius: 8px;
+    border: 2px solid #ff8c42;
+    background-color: #2b2b3c;
+    color: #fff;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.add-item button {
+    grid-column: span 2; /* Ocupa duas colunas no grid para que o botão seja mais visível */
+    padding: 12px;
+    background: linear-gradient(135deg, #ff8c42, #ff6b00);
+    color: #1c1c2b;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
