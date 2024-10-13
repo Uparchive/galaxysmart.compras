@@ -63,7 +63,8 @@ function toggleSectionVisibility(event, sectionName) {
     const sectionDiv = event.target.closest('.section');
     if (!sectionDiv) return;
 
-    const elementsToToggle = sectionDiv.querySelectorAll('.section-buttons, .search-bar, ul');
+    // Seleciona os elementos que serão ocultados/exibidos
+    const elementsToToggle = sectionDiv.querySelectorAll('.section-buttons, .search-bar, ul, .add-item');
     const eyeIcon = sectionDiv.querySelector('.eye-icon'); // Procurar no contexto da seção toda
 
     // Verifique se o eyeIcon foi encontrado antes de tentar modificar seu conteúdo

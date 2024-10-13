@@ -620,4 +620,14 @@ li {
     flex-wrap: wrap;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+.hidden {
+    display: none !important;
+}
+.section {
+    background-color: #1b2330;
+    padding: 25px;
+    margin-bottom: 40px; /* Aumente o valor para criar mais espaço entre as seções */
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(255, 140, 66, 0.2);
+}
 
