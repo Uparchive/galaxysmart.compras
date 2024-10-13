@@ -580,48 +580,45 @@ function generateReport() {
     document.getElementById('downloadSection').style.display = 'block';
 }
 
-function generateExcel() {
-    const workbook = XLSX.utils.book_new();
+async function generateWord() {
+    // Cria um novo documento Word
+    const doc = new docx.Document({
+        sections: [
+            {
+                properties: {},
+                children: sections.map(section => {
+                    const sectionTitle = new docx.Paragraph({
+                        text: section.name || 'Seção',
+                        heading: docx.HeadingLevel.HEADING_1,
+                        spacing: { after: 200 }
+                    });
 
-    // Verifica se há seções disponíveis
-    if (sections.length === 0) {
-        alert('Nenhuma seção disponível para exportação.');
-        return;
-    }
+                    const itemParagraphs = section.items.map(item => {
+                        if (item.purchased > 0) {
+                            return new docx.Paragraph({
+                                text: `(${item.purchased}) - ${item.name} - (${item.store})`,
+                                spacing: { after: 100 }
+                            });
+                        }
+                    }).filter(Boolean);
 
-    // Itera sobre cada seção para criar uma planilha correspondente
-    sections.forEach(section => {
-        // Verifica se há itens na seção e prepara os dados para a planilha
-        const worksheetData = section.items && section.items.length > 0
-            ? section.items.map(item => ({
-                'Produto': item.name,
-                'Loja': item.store,
-                'Quantidade Comprada': item.purchased,
-                'Estoque': item.stock,
-                'Fornecedor': item.supplier || 'Não especificado'
-            }))
-            : [{ 'Mensagem': 'Nenhum item disponível' }]; // Mensagem padrão para seções sem itens
-
-        // Cria uma nova planilha a partir dos dados
-        const worksheet = XLSX.utils.json_to_sheet(worksheetData);
-
-        // Define a largura das colunas para melhorar a legibilidade
-        const colWidths = [
-            { wch: 30 }, // Largura da coluna "Produto" ou "Mensagem"
-            { wch: 20 }, // Largura da coluna "Loja"
-            { wch: 18 }, // Largura da coluna "Quantidade Comprada"
-            { wch: 15 }, // Largura da coluna "Estoque"
-            { wch: 25 }  // Largura da coluna "Fornecedor"
-        ];
-        worksheet['!cols'] = colWidths;
-
-        // Adiciona a planilha ao workbook, utilizando o nome da seção ou um padrão
-        const sheetName = section.name ? section.name.substring(0, 31) : 'Seção';
-        XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+                    return [sectionTitle, ...itemParagraphs, new docx.Paragraph({ text: '', spacing: { after: 200 } })];
+                }).flat()
+            }
+        ]
     });
 
-    // Salva o workbook em um arquivo Excel
-    XLSX.writeFile(workbook, 'relatorio_de_compras.xlsx');
+    try {
+        // Gera o documento Word como um Blob e faz o download
+        const blob = await docx.Packer.toBlob(doc);
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'relatorio_de_compras.docx';
+        link.click();
+    } catch (error) {
+        console.error('Erro ao gerar o documento Word:', error);
+        alert('Ocorreu um erro ao gerar o documento Word. Verifique o console para mais detalhes.');
+    }
 }
 
 function copyReportToClipboard() {

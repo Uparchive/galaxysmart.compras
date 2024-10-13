@@ -592,4 +592,18 @@ input[type="number"]:focus {
 .hidden {
     display: none !important;
 }
+li {
+    width: calc(100% - 20px); /* Ajuste de 20px para evitar que fique encostado nas bordas */
+    box-sizing: border-box;
+    /* Manter o restante das regras */
+}
+
+.section {
+    padding: 20px;
+    margin: 0 auto; /* Centraliza a seção */
+    max-width: 100%; /* Garante que a largura máxima seja respeitada */
+}
+.section-buttons button {
+    margin-bottom: 15px; /* Adiciona um espaçamento abaixo dos botões */
+}
 
