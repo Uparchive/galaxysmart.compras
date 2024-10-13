@@ -566,68 +566,20 @@ input[type="number"]:focus {
 #report button:active {
     transform: scale(0.95);
 }
-
-.toggle-section-btn {
-    background: none;
-    border: none;
-    color: #ccc;
-    cursor: pointer;
-    font-size: 20px;
-    transition: transform 0.3s ease;
-    margin-left: 10px;
-    display: inline-flex;
-    align-items: center;
-}
-
-.toggle-section-btn:hover {
-    color: #fff;
-    transform: scale(1.1);
-}
-
-.eye-icon {
-    font-size: 18px;
-    transition: transform 0.3s ease;
-}
-
-.hidden {
-    display: none !important;
-}
-li {
-    width: calc(100% - 20px); /* Ajuste de 20px para evitar que fique encostado nas bordas */
-    box-sizing: border-box;
-    /* Manter o restante das regras */
-}
-
-.section {
+#registrationForm, #loginForm {
+    background: #1b2330;
     padding: 20px;
-    margin: 0 auto; /* Centraliza a seção */
-    max-width: 100%; /* Garante que a largura máxima seja respeitada */
-}
-.section-buttons button {
-    margin-bottom: 15px; /* Adiciona um espaçamento abaixo dos botões */
-}
-li {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 15px;
-    margin: 8px 0;
-    border-radius: 12px;
-    box-shadow: 0 3px 8px rgba(255, 140, 66, 0.3);
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.hidden {
-    display: none !important;
-}
-.section {
-    background-color: #1b2330;
-    padding: 25px;
-    margin-bottom: 40px; /* Aumente o valor para criar mais espaço entre as seções */
     border-radius: 15px;
     box-shadow: 0 4px 10px rgba(255, 140, 66, 0.2);
+    max-width: 400px;
+    margin: 20px auto;
 }
 
+#registrationForm input, #loginForm input {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+#registrationForm button, #loginForm button {
+    width: 100%;
+}

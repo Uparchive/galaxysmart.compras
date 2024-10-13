@@ -1,5 +1,18 @@
 // script.js
+let sections = [];
 
+document.addEventListener('DOMContentLoaded', function() {
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    if (loggedInUser) {
+        document.getElementById('mainContent').style.display = 'block';
+    } else {
+        showLoginForm();
+    }
+
+    window.onscroll = function() {
+        toggleScrollToTopButton();
+    };
+});
 // Configuração do Firebase
 var firebaseConfig = {
     apiKey: "AIzaSyAbADgKRicHlfDWoaXmIfU0EjGbU6nFkPQ",
@@ -15,9 +28,18 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 var database = firebase.database();
 
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+        // O usuário está autenticado
+        console.log('Usuário autenticado:', user.uid);
+    } else {
+        // Nenhum usuário autenticado
+        console.error('Usuário não autenticado.');
+    }
+});
+
 // Dados armazenados no localStorage ou inicializados vazios
 let purchasedItems = JSON.parse(localStorage.getItem('purchasedItems')) || [];
-let sections = JSON.parse(localStorage.getItem('sections')) || [];
 
 // Função para salvar o estado no localStorage
 function saveState() {
@@ -57,35 +79,6 @@ function toggleRiscado(event, uniqueId) {
     unmarkButton.style.display = listItem.classList.contains('riscado') ? 'inline-block' : 'none';
 
     saveState();
-}
-
-function toggleSectionVisibility(event, sectionName) {
-    const sectionDiv = event.target.closest('.section');
-    if (!sectionDiv) return;
-
-    // Seleciona os elementos que serão ocultados/exibidos
-    const elementsToToggle = sectionDiv.querySelectorAll('.section-buttons, .search-bar, ul, .add-item');
-    const eyeIcon = sectionDiv.querySelector('.eye-icon'); // Procurar no contexto da seção toda
-
-    // Verifique se o eyeIcon foi encontrado antes de tentar modificar seu conteúdo
-    if (!eyeIcon) {
-        console.error('Eye icon not found for section:', sectionName);
-        return;
-    }
-
-    console.log('Toggling visibility for section:', sectionName);
-
-    // Alterna a visibilidade dos elementos utilizando a classe 'hidden'
-    let allHidden = true;
-    elementsToToggle.forEach(element => {
-        element.classList.toggle('hidden');
-        if (!element.classList.contains('hidden')) {
-            allHidden = false;
-        }
-    });
-
-    // Atualiza o ícone com base no estado atual dos elementos
-    eyeIcon.textContent = allHidden ? '🙈' : '👁️'; // Olho riscado quando oculto, olho normal quando visível
 }
 
 // Função para descartar um item
@@ -151,47 +144,40 @@ function restoreState() {
 
 // Função para adicionar uma nova seção
 function addSection() {
-    const sectionNameInput = document.getElementById('newSectionName');
-    if (!sectionNameInput) return;
-    const sectionName = sectionNameInput.value.trim();
-    if (sectionName) {
-        // Verifica se já existe uma seção com o mesmo nome
-        const existingSection = sections.find(s => s.name.toLowerCase() === sectionName.toLowerCase());
-        if (existingSection) {
-            alert('Já existe uma seção com este nome.');
-            return;
-        }
+    const sectionName = document.getElementById('newSectionName').value.trim();
 
-        const newSection = { name: sectionName, items: [], isFixed: false };
-        sections.push(newSection);
-        addSectionToDOM(sectionName, [], false);
-        sectionNameInput.value = '';
-        saveState();
-    } else {
+    if (!sectionName) {
         alert('Por favor, insira um nome para a seção.');
+        return;
     }
+
+    const newSection = {
+        name: sectionName,
+        items: []
+    };
+
+    sections.push(newSection);
+    renderSections(); // Atualiza a interface com a nova seção
+
+    document.getElementById('newSectionName').value = ''; // Limpa o campo de entrada
 }
 
 // Função para adicionar uma seção ao DOM
 function addSectionToDOM(name, items, isFixed) {
     const sectionsContainer = document.getElementById('sections');
     if (!sectionsContainer) return;
+
     const sectionDiv = document.createElement('div');
     sectionDiv.classList.add('section');
     sectionDiv.innerHTML = `
-        <h2>
-            ${name}
-            <button class="toggle-section-btn" onclick="toggleSectionVisibility(event, '${name}')">
-                <span class="eye-icon">👁️</span>
-            </button>
-        </h2>
+        <h2>${name}</h2>
         <div class="section-buttons">
             <button class="discard-section-btn" onclick="discardSection(event, '${name}')">Descartar Seção</button>
             <button class="edit-section-btn" onclick="editSectionName(event, '${name}')">Editar Seção</button>
             <button class="pin-section-btn" onclick="toggleFixSection('${name}')">${isFixed ? 'Destravar Seção' : 'Fixar Seção'}</button>
         </div>
         <input type="text" class="search-bar" placeholder="Pesquisar na seção..." onkeyup="filterItems(event, '${name}')">
-        <ul class="sortable" data-section-name="${name}" style="display: block;"></ul>
+        <ul class="sortable" data-section-name="${name}"></ul>
         <div class="add-item">
             <input type="number" placeholder="Qtd Estoque" class="newItemStock">
             <input type="text" placeholder="Nome do Produto" class="newItemName">
@@ -199,9 +185,17 @@ function addSectionToDOM(name, items, isFixed) {
             <input type="text" placeholder="Loja" class="newItemStore">
             <button onclick="addItem(event, '${name}')">Adicionar Produto</button>
         </div>`;
+    
     sectionsContainer.appendChild(sectionDiv);
-
+    
     const ulElement = sectionDiv.querySelector('ul');
+
+    // Adiciona a classe 'fixed' se a seção estiver fixada
+    if (isFixed) {
+        ulElement.classList.add('fixed');
+    }
+
+    // Certifica-se de adicionar itens já existentes
     if (!items) {
         items = [];
     } else if (!Array.isArray(items)) {
@@ -211,13 +205,14 @@ function addSectionToDOM(name, items, isFixed) {
     if (items.length === 0) {
         ulElement.classList.add('placeholder');
     }
-
+    
     items.forEach(item => {
         addItemToDOM(ulElement, item, name);
     });
 
     initializeSortable(ulElement, isFixed);
 }
+
 
 function filterItems(event, sectionName) {
     const searchTerm = event.target.value.toLowerCase();
@@ -568,142 +563,95 @@ function generateReport() {
     sections.forEach(section => {
         reportHTML += `<h3>${section.name}:</h3><ul>`;
         section.items.forEach(item => {
-            if (item.purchased > 0) {
+            if (item.purchased > 0) { // Considera apenas os itens comprados
                 reportHTML += `<li>(${item.purchased}) - ${item.name} - (${item.store})</li>`;
             }
         });
         reportHTML += `</ul>`;
     });
     document.getElementById('report').innerHTML = reportHTML;
-    document.getElementById('report').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('report').scrollIntoView({ behavior: 'smooth' }); // Rola até o relatório
 
-    // Torna visível o botão de download após gerar o relatório
-    document.getElementById('downloadSection').style.display = 'block';
+    // Cria botão para download do relatório em PDF
+    const downloadButton = document.createElement('button');
+    downloadButton.innerText = 'Baixar Relatório em PDF';
+    downloadButton.onclick = generatePDF;
+    document.getElementById('report').appendChild(downloadButton);
 }
 
-async function generateWord() {
-    // Cria um novo documento Word
-    const doc = new docx.Document({
-        sections: [
-            {
-                properties: {},
-                children: sections.map(section => {
-                    const sectionTitle = new docx.Paragraph({
-                        text: section.name || 'Seção',
-                        heading: docx.HeadingLevel.HEADING_1,
-                        spacing: { after: 200 }
-                    });
+function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-                    const itemParagraphs = section.items.map(item => {
-                        if (item.purchased > 0) {
-                            return new docx.Paragraph({
-                                text: `(${item.purchased}) - ${item.name} - (${item.store})`,
-                                spacing: { after: 100 }
-                            });
-                        }
-                    }).filter(Boolean);
+    let y = 10; // Posição Y inicial no PDF
+    doc.setFontSize(16);
+    doc.text('Relatório de Produtos', 10, y);
+    y += 10;
 
-                    return [sectionTitle, ...itemParagraphs, new docx.Paragraph({ text: '', spacing: { after: 200 } })];
-                }).flat()
+    sections.forEach(section => {
+        doc.setFontSize(14);
+        doc.text(`${section.name}:`, 10, y);
+        y += 10;
+        section.items.forEach(item => {
+            if (item.purchased > 0) {
+                doc.setFontSize(12);
+                doc.text(`(${item.purchased}) - ${item.name} - (${item.store})`, 10, y);
+                y += 10;
             }
-        ]
+        });
+        y += 5;
     });
 
-    try {
-        // Gera o documento Word como um Blob e faz o download
-        const blob = await docx.Packer.toBlob(doc);
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'relatorio_de_compras.docx';
-        link.click();
-    } catch (error) {
-        console.error('Erro ao gerar o documento Word:', error);
-        alert('Ocorreu um erro ao gerar o documento Word. Verifique o console para mais detalhes.');
-    }
+    doc.save('relatorio_de_compras.pdf');
 }
 
-function copyReportToClipboard() {
-    const reportElement = document.getElementById('report');
-    if (!reportElement || reportElement.innerText.trim() === '') {
-        alert('O relatório está vazio. Por favor, gere o relatório primeiro.');
+function saveOnline() {
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    if (!loggedInUser) {
+        alert('Você precisa estar logado para salvar online.');
         return;
     }
 
-    // Cria uma string que armazenará o texto do relatório
-    let reportText = '';
+    const database = firebase.database().ref('savedStates/' + loggedInUser);
+    const sectionsData = JSON.stringify(sections);
 
-    // Itera sobre cada seção do relatório, adicionando parágrafos entre elas
-    sections.forEach(section => {
-        reportText += `\n${section.name}:\n\n`; // Adiciona o nome da seção com duas quebras de linha
-        section.items.forEach(item => {
-            if (item.purchased > 0) {
-                reportText += `(${item.purchased}) - ${item.name} - (${item.store})\n`;
-            }
-        });
-        reportText += '\n'; // Adiciona uma quebra de linha entre as seções para espaçamento
+    database.set({
+        sections: sectionsData
+    }).then(() => {
+        alert('Histórico salvo com sucesso!');
+    }).catch((error) => {
+        console.error('Erro ao salvar o histórico: ', error);
+        alert('Não foi possível salvar o histórico.');
     });
-
-    // Cria um elemento temporário para copiar o texto
-    const tempTextArea = document.createElement('textarea');
-    tempTextArea.value = reportText.trim(); // Remove espaços em excesso antes e depois do texto
-    document.body.appendChild(tempTextArea);
-
-    // Seleciona o conteúdo e copia para a área de transferência
-    tempTextArea.select();
-    document.execCommand('copy');
-
-    // Remove o elemento temporário
-    document.body.removeChild(tempTextArea);
-
-    // Alerta o usuário que o texto foi copiado
-    alert('Relatório copiado para a área de transferência!');
 }
 
-// Função para salvar o estado atual online (Firebase)
-function saveOnline() {
-    const saveName = prompt("Nome para o salvamento:");
-    if (saveName && saveName.trim() !== '') {
-        const data = { sections, purchasedItems, timestamp: Date.now(), name: saveName.trim() };
-        const newDataKey = database.ref().child('savedStates').push().key;
-        const updates = {};
-        updates['/savedStates/' + newDataKey] = data;
-        database.ref().update(updates).then(() => {
-            alert('Estado salvo online com sucesso!');
-            loadSavedStates(); // Atualiza a lista de salvamentos
-        }).catch(error => {
-            alert('Erro ao salvar online: ' + error.message);
-        });
-    } else {
-        alert('Operação cancelada ou nome inválido.');
-    }
-}
-
-// Função para carregar os estados salvos online
 function loadSavedStates() {
+    const user = JSON.parse(localStorage.getItem('loggedInUser'));
     const savedCardsContainer = document.getElementById('savedCards');
-    if (!savedCardsContainer) return;
-    savedCardsContainer.innerHTML = '<p>Carregando salvamentos...</p>';
 
-    database.ref('/savedStates/').once('value').then(function(snapshot) {
+    if (!user || !savedCardsContainer) return;
+
+    savedCardsContainer.innerHTML = '<p>Carregando salvamentos...</p>';
+    
+    database.ref(`/savedStates/${user.storeName}`).once('value').then(snapshot => {
         const savedStates = [];
-        snapshot.forEach(function(childSnapshot) {
+        snapshot.forEach(childSnapshot => {
             const savedState = childSnapshot.val();
             savedState.key = childSnapshot.key;
             savedStates.push(savedState);
         });
 
-        // Exibir os mais recentes no topo
         savedStates.sort((a, b) => b.timestamp - a.timestamp);
-
         savedCardsContainer.innerHTML = '';
         savedStates.forEach(savedState => {
             addSavedCardToDOM(savedState);
         });
-    }).catch(function(error) {
+    }).catch(error => {
         savedCardsContainer.innerHTML = '<p>Erro ao carregar salvamentos.</p>';
         console.error('Erro ao carregar salvamentos:', error);
     });
 }
+
 
 // Função para adicionar um cartão de salvamento ao DOM
 function addSavedCardToDOM(savedState) {
@@ -811,14 +759,14 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-// Função para inicializar tudo ao carregar a página
+// Função para mostrar o formulário de cadastro na primeira visita
 window.onload = function() {
-    restoreState();
-    loadSavedStates();
-};
-
-window.onscroll = function() {
-    toggleScrollToTopButton();
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    if (loggedInUser) {
+        document.getElementById('mainContent').style.display = 'block';
+    } else {
+        showLoginForm();
+    }
 };
 
 function toggleScrollToTopButton() {
@@ -837,3 +785,96 @@ function scrollToTop() {
     });
 }
 
+function registerUser() {
+    const storeName = document.getElementById('storeName').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (password !== confirmPassword) {
+        alert('As senhas não coincidem.');
+        return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('users')) || {};
+
+    if (users[storeName]) {
+        alert('Este nome de loja já está registrado.');
+        return;
+    }
+
+    users[storeName] = { password };
+    localStorage.setItem('users', JSON.stringify(users));
+    alert('Cadastro realizado com sucesso!');
+    showLoginForm();
+}
+
+function loginUser() {
+    const storeName = document.getElementById('loginStoreName').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    const users = JSON.parse(localStorage.getItem('users')) || {};
+
+    if (users[storeName] && users[storeName].password === password) {
+        localStorage.setItem('loggedInUser', storeName);
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+
+        // Carregar histórico online do Firebase
+        const database = firebase.database().ref('savedStates/' + storeName);
+        database.once('value').then((snapshot) => {
+            if (snapshot.exists()) {
+                const savedSections = JSON.parse(snapshot.val().sections);
+                sections = savedSections;
+                renderSections(); // Função para renderizar as seções no HTML
+            }
+        }).catch((error) => {
+            console.error('Erro ao carregar o histórico: ', error);
+        });
+    } else {
+        alert('Nome da loja ou senha incorretos.');
+    }
+}
+
+// Função para mostrar o conteúdo principal após login/registro
+function showMainContent() {
+    document.getElementById('registrationForm').style.display = 'none';
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+    loadSavedStates(); // Carrega os dados específicos do usuário
+}
+
+function logoutUser() {
+    localStorage.removeItem('loggedInUser');
+    location.reload();
+}
+
+function showLoginForm() {
+    document.getElementById('registrationForm').style.display = 'none';
+    document.getElementById('loginForm').style.display = 'block';
+}
+
+function showRegistrationForm() {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('registrationForm').style.display = 'block';
+}
+
+function renderSections() {
+    const sectionsContainer = document.getElementById('sections');
+    sectionsContainer.innerHTML = '';
+
+    sections.forEach(section => {
+        const sectionDiv = document.createElement('div');
+        sectionDiv.className = 'section';
+        sectionDiv.innerHTML = `<h3>${section.name}</h3>`;
+
+        const ulElement = document.createElement('ul');
+        section.items.forEach(item => {
+            const liElement = document.createElement('li');
+            liElement.textContent = `${item.name} - Estoque: ${item.stock} - Loja: ${item.store}`;
+            ulElement.appendChild(liElement);
+        });
+
+        sectionDiv.appendChild(ulElement);
+        sectionsContainer.appendChild(sectionDiv);
+    });
+}
