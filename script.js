@@ -19,6 +19,62 @@ var database = firebase.database();
 let purchasedItems = JSON.parse(localStorage.getItem('purchasedItems')) || [];
 let sections = JSON.parse(localStorage.getItem('sections')) || [];
 
+// Função de cadastro de usuário
+function signUp() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            alert('Usuário cadastrado com sucesso!');
+            document.getElementById('auth-container').style.display = 'none';
+            document.getElementById('logout-btn').style.display = 'block';
+        })
+        .catch((error) => {
+            alert(`Erro ao cadastrar: ${error.message}`);
+        });
+}
+
+// Função de login de usuário
+function signIn() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            alert('Login bem-sucedido!');
+            document.getElementById('auth-container').style.display = 'none';
+            document.getElementById('logout-btn').style.display = 'block';
+        })
+        .catch((error) => {
+            alert(`Erro ao fazer login: ${error.message}`);
+        });
+}
+
+// Função de logout de usuário
+function signOut() {
+    firebase.auth().signOut()
+        .then(() => {
+            alert('Logout realizado com sucesso!');
+            document.getElementById('auth-container').style.display = 'block';
+            document.getElementById('logout-btn').style.display = 'none';
+        })
+        .catch((error) => {
+            alert(`Erro ao fazer logout: ${error.message}`);
+        });
+}
+
+// Verifica o estado de autenticação do usuário
+firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+        document.getElementById('auth-container').style.display = 'none';
+        document.getElementById('logout-btn').style.display = 'block';
+    } else {
+        document.getElementById('auth-container').style.display = 'block';
+        document.getElementById('logout-btn').style.display = 'none';
+    }
+});
+
 // Função para salvar o estado no localStorage
 function saveState() {
     localStorage.setItem('purchasedItems', JSON.stringify(purchasedItems));
