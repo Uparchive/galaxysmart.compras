@@ -210,6 +210,22 @@
     </style>
 </head>
 <body>
+    <h2>Gerenciador de Seções e Produtos</h2>
+
+    <!-- Formulário de Login/Cadastro -->
+    <div id="auth-container">
+        <input type="email" id="email" placeholder="Email" />
+        <input type="password" id="password" placeholder="Senha" />
+        <button onclick="signUp()">Cadastrar</button>
+        <button onclick="signIn()">Login</button>
+    </div>
+    <button id="logout-btn" onclick="signOut()" style="display: none;">Logout</button>
+
+    <!-- Seu conteúdo já existente, como add-section, button-group-main, etc. -->
+    <div class="add-section">
+        <input type="text" id="newSectionName" placeholder="Nome da Seção">
+        <button onclick="addSection()">Adicionar Seção</button>
+    </div>
 
     <h2>Gerenciador de Seções e Produtos</h2>
 
