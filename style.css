@@ -1253,4 +1253,34 @@ input.purchased-input {
     flex: 1;
     outline: none;
 }
+/* ========================================= */
+/* ========== Estilo do Botão de Logout ========== */
+/* ========================================= */
+
+.logout-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #ff8c42, #ff6b00);
+    color: #1c1c2b;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    box-shadow: 0 4px 10px rgba(255, 140, 66, 0.3);
+    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    z-index: 1000;
+}
+
+.logout-button:hover {
+    background: linear-gradient(135deg, #ff6b00, #ff8c42);
+    transform: scale(1.05);
+    box-shadow: 0 8px 15px rgba(255, 140, 66, 0.5);
+}
+
+.logout-button:active {
+    transform: scale(0.95);
+}
 
