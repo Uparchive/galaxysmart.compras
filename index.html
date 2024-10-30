@@ -7,210 +7,8 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
-        @media (max-width: 768px) {
-            .item-separator {
-                display: none;
-            }
-        }
-
-        .button-group-main {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: space-between;
-        }
-
-        .button-group-main button {
-            flex: 1 1 calc(25% - 10px);
-            min-width: 100px;
-            padding: 10px;
-            background: linear-gradient(135deg, #ff8c42, #ff6b00);
-            color: #1c1c2b;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s ease, transform 0.3s ease;
-        }
-
-        .button-group-main button:hover {
-            background: linear-gradient(135deg, #ff6b00, #ff8c42);
-            transform: scale(1.05);
-        }
-
-        .button-group-main button:active {
-            transform: scale(0.95);
-        }
-
-        .section-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: space-between;
-        }
-
-        .section-buttons button {
-            flex: 1 1 calc(33.33% - 10px);
-            min-width: 100px;
-            padding: 10px;
-            background: linear-gradient(135deg, #ff8c42, #ff6b00);
-            color: #1c1c2b;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s ease, transform 0.3s ease;
-        }
-
-        .section-buttons button:hover {
-            background: linear-gradient(135deg, #ff6b00, #ff8c42);
-            transform: scale(1.05);
-        }
-
-        .section-buttons button:active {
-            transform: scale(0.95);
-        }
-
-        #scrollToTopBtn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #ff8c42;
-            color: #ffffff;
-            border: none;
-            border-radius: 50%;
-            padding: 15px;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            display: none;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-
-        #scrollToTopBtn:hover {
-            background: #ff6b00;
-            transform: scale(1.1);
-        }
-
-        #scrollToTopBtn:active {
-            transform: scale(0.95);
-        }
-
-        #downloadSection {
-            display: none;
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        #downloadSection button {
-            padding: 10px;
-            background: linear-gradient(135deg, #ff8c42, #ff6b00);
-            color: #1c1c2b;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s ease, transform 0.3s ease;
-        }
-
-        #downloadSection button:hover {
-            background: linear-gradient(135deg, #ff6b00, #ff8c42);
-            transform: scale(1.05);
-        }
-
-        #downloadSection button:active {
-            transform: scale(0.95);
-        }
-
-        .item-details span {
-            font-size: 14px;
-            color: #e0e0e0;
-            position: relative;
-            padding-right: 15px;
-        }
-
-        .item-details span:nth-child(1) {
-            color: #ff8c42;
-            font-weight: bold;
-        }
-
-        .item-details span:nth-child(2) {
-            color: #ff6b00;
-            font-weight: bold;
-        }
-
-        .item-details span:nth-child(3) {
-            color: #b0b0b0;
-            font-style: italic;
-        }
-
-        .item-details span:not(:last-child)::after {
-            content: '|';
-            position: absolute;
-            right: 5px;
-            color: #ff8c42;
-        }
-
-        .item-details {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            justify-content: flex-start;
-        }
-
-        .item-details span:hover {
-            color: #ff6b00;
-            cursor: pointer;
-            transform: scale(1.05);
-            transition: color 0.3s ease, transform 0.3s ease;
-        }
-
-        .search-container {
-            position: relative;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-            margin-bottom: 20px;
-        }
-
-        .search-bar {
-            flex: 1;
-            padding: 10px 40px 10px 10px;
-            border-radius: 8px;
-            border: 1px solid #ff8c42;
-            background-color: #2b2b3c;
-            color: #fff;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-
-        .filter-icons {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            gap: 10px;
-        }
-
-        .filter-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #ff8c42;
-            font-size: 18px;
-            transition: transform 0.3s ease, color 0.3s ease;
-        }
-
-        .filter-btn:hover {
-            color: #ff6b00;
-            transform: scale(1.1);
-        }
-    </style>
 </head>
 <body>
-    <h2>Gerenciador de Seções e Produtos</h2>
 
     <!-- Formulário de Login/Cadastro -->
     <div id="auth-container" class="auth-container">
@@ -231,47 +29,226 @@
 
     <!-- Conteúdo Principal - Gerenciador de Seções e Produtos -->
     <div id="main-content" style="display: none;">
+        <h2>Gerenciador de Seções e Produtos</h2>
+
         <div class="add-section">
             <input type="text" id="newSectionName" placeholder="Nome da Seção">
             <button onclick="addSection()">Adicionar Seção</button>
         </div>
-
+        
         <div class="button-group-main">
             <button onclick="generateReport()">Gerar Relatório</button>
             <button onclick="saveOnline()">Salvar Online</button>
             <button onclick="organizeBySimilarity()">Organizar por Similaridade</button>
-            <button class="toggle-saves-btn" onclick="toggleOnlineSaves()">Histórico Online<span class="arrow">▼</span></button>
+            <button class="toggle-saves-btn" onclick="toggleOnlineSaves()">
+                Histórico Online
+                <span class="arrow">▼</span>
+            </button>
         </div>
-
+        
         <div class="total-items">
             Total de Itens: <span id="totalItemCount">0</span>
         </div>
-
+        
         <div id="sections"></div>
 
         <div id="report"></div>
-        <div id="downloadSection" style="display: none; text-align: center; margin-top: 20px;">
+        <div id="downloadSection">
             <button onclick="copyReportToClipboard()">Copiar Relatório</button>
         </div>
-
-        <div id="onlineSavesSection" style="display: none;">
+        
+        <div id="onlineSavesSection">
             <h2>Histórico Online</h2>
             <div class="saved-cards" id="savedCards"></div>
         </div>
+        
+        <button id="scrollToTopBtn" onclick="scrollToTop()">⬆️ Topo</button>
     </div>
-
-    <button id="scrollToTopBtn" onclick="scrollToTop()">⬆️ Topo</button>
-
+    
     <!-- Scripts do Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-auth-compat.js"></script>
-
+    
     <!-- Outras dependências -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.3.2/docx.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-
+    
     <!-- Seu script principal -->
-    <script src="script.js"></script>
+    <script src="script.js"></script>    
+
+    <script>
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                document.getElementById('auth-container').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            } else {
+                document.getElementById('auth-container').style.display = 'block';
+                document.getElementById('main-content').style.display = 'none';
+            }
+        });
+
+        function addItem(event, sectionName) {
+            const sectionDiv = event.target.closest('.section');
+            if (!sectionDiv) return;
+
+            const itemNameInput = sectionDiv.querySelector('.newItemName');
+            const itemStoreInput = sectionDiv.querySelector('.newItemStore');
+            const itemStockInput = sectionDiv.querySelector('.newItemStock');
+            const itemRequestedInput = sectionDiv.querySelector('.newItemRequested');
+            const itemSupplierInput = sectionDiv.querySelector('.newItemSupplier');
+
+            if (!itemNameInput || !itemStoreInput || !itemStockInput || !itemRequestedInput) {
+                console.error("Algum dos campos do formulário não foi encontrado.");
+                return;
+            }
+
+            const itemName = itemNameInput.value.trim();
+            const itemStore = itemStoreInput.value.trim();
+            const itemStock = parseInt(itemStockInput.value) || 0;
+            const itemRequested = parseInt(itemRequestedInput.value) || 0;
+            const itemSupplier = itemSupplierInput ? itemSupplierInput.value.trim() : "";
+
+            const uniqueId = `${itemName}-${itemStore}-${Date.now()}`;
+
+            if (itemName && itemStore) {
+                const section = sections.find(s => s.name === sectionName);
+                if (!section) return;
+
+                const newItem = {
+                    name: itemName,
+                    store: itemStore,
+                    stock: itemStock,
+                    requested: itemRequested,
+                    supplier: itemSupplier,
+                    purchased: 0,
+                    uniqueId: uniqueId
+                };
+
+                section.items.push(newItem);
+
+                let ulElement = sectionDiv.querySelector('ul');
+                if (!ulElement) {
+                    ulElement = document.createElement('ul');
+                    sectionDiv.appendChild(ulElement);
+                }
+                ulElement.classList.remove('placeholder');
+                addItemToDOM(ulElement, newItem, sectionName);
+
+                itemNameInput.value = '';
+                itemStoreInput.value = '';
+                itemStockInput.value = '';
+                itemRequestedInput.value = '';
+                if (itemSupplierInput) itemSupplierInput.value = '';
+
+                saveState();
+            } else {
+                alert('Por favor, insira um nome para o produto e uma loja.');
+            }
+        }
+
+        function generateReport() {
+            let reportHTML = '<h2>Relatório de Produtos</h2>';
+            sections.forEach(section => {
+                reportHTML += `<h3>${section.name}:</h3><ul>`;
+                section.items.forEach(item => {
+                    if (item.purchased > 0) {
+                        reportHTML += `<li>(${item.purchased}) - ${item.name} - (${item.store})</li>`;
+                    }
+                });
+                reportHTML += `</ul>`;
+            });
+            document.getElementById('report').innerHTML = reportHTML;
+            document.getElementById('report').scrollIntoView({ behavior: 'smooth' });
+
+            document.getElementById('downloadSection').style.display = 'block';
+        }
+
+        async function generateWord() {
+            const doc = new docx.Document();
+            const sectionsForDoc = [];
+
+            sections.forEach(section => {
+                const sectionTitle = new docx.Paragraph({
+                    text: section.name || 'Seção',
+                    heading: docx.HeadingLevel.HEADING_1,
+                    spacing: { after: 200 }
+                });
+
+                const itemsParagraphs = section.items.map(item => {
+                    if (item.purchased > 0) {
+                        return new docx.Paragraph({
+                            text: `(${item.purchased}) - ${item.name} - (${item.store})`,
+                            spacing: { after: 100 }
+                        });
+                    }
+                }).filter(Boolean);
+
+                sectionsForDoc.push(sectionTitle, ...itemsParagraphs, new docx.Paragraph({ text: '', spacing: { after: 200 } }));
+            });
+
+            doc.addSection({
+                properties: {},
+                children: sectionsForDoc
+            });
+
+            try {
+                const blob = await docx.Packer.toBlob(doc);
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'relatorio_de_compras.docx';
+                link.click();
+            } catch (error) {
+                console.error('Erro ao gerar o documento Word:', error);
+                alert('Ocorreu um erro ao gerar o documento Word. Verifique o console para mais detalhes.');
+            }
+        }
+
+        function generateExcel() {
+            const workbook = XLSX.utils.book_new();
+
+            sections.forEach(section => {
+                const worksheetData = section.items.map(item => ({
+                    'Produto': item.name,
+                    'Loja': item.store,
+                    'Quantidade Comprada': item.purchased,
+                    'Estoque': item.stock,
+                    'Fornecedor': item.supplier || 'Não especificado'
+                }));
+
+                const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+
+                const colWidths = [
+                    { wch: 30 }, { wch: 20 }, { wch: 18 }, { wch: 15 }, { wch: 25 }
+                ];
+                worksheet['!cols'] = colWidths;
+
+                XLSX.utils.book_append_sheet(workbook, worksheet, section.name);
+            });
+
+            XLSX.writeFile(workbook, 'relatorio_de_compras.xlsx');
+        }
+
+        window.onscroll = function() {
+            toggleScrollToTopButton();
+        };
+
+        function toggleScrollToTopButton() {
+            const btn = document.getElementById("scrollToTopBtn");
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                btn.style.display = "block";
+            } else {
+                btn.style.display = "none";
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+
 </body>
 </html>
