@@ -47,7 +47,11 @@ function signUp() {
         })
         .catch((error) => {
             // Erro ao cadastrar
-            alert('Erro ao cadastrar: ' + error.message);
+            if (error.code === 'auth/email-already-in-use') {
+                alert('O email já está em uso. Por favor, faça login.');
+            } else {
+                alert('Erro ao cadastrar: ' + error.message);
+            }
         });
 }
 
@@ -71,39 +75,14 @@ function signIn() {
         })
         .catch((error) => {
             // Erro no login
-            alert('Erro ao fazer login: ' + error.message);
+            if (error.code === 'auth/user-not-found') {
+                alert('Usuário não encontrado. Por favor, faça o cadastro.');
+            } else if (error.code === 'auth/wrong-password') {
+                alert('Senha incorreta. Tente novamente.');
+            } else {
+                alert('Erro ao fazer login: ' + error.message);
+            }
         });
-}
-
-// Função de logout de usuário
-function signOut() {
-    firebase.auth().signOut()
-        .then(() => {
-            alert('Logout realizado com sucesso!');
-            document.getElementById('auth-container').style.display = 'block';
-            document.getElementById('logout-btn').style.display = 'none';
-        })
-        .catch((error) => {
-            alert(`Erro ao fazer logout: ${error.message}`);
-        });
-}
-
-// Verifica o estado de autenticação do usuário
-firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-        document.getElementById('auth-container').style.display = 'none';
-        document.getElementById('logout-btn').style.display = 'block';
-    } else {
-        document.getElementById('auth-container').style.display = 'block';
-        document.getElementById('logout-btn').style.display = 'none';
-    }
-});
-
-// Função para salvar o estado no localStorage
-function saveState() {
-    localStorage.setItem('purchasedItems', JSON.stringify(purchasedItems));
-    localStorage.setItem('sections', JSON.stringify(sections));
-    updateTotalItemCount(); // Atualiza a contagem total sempre que o estado é salvo
 }
 
 // Função para alternar o estado riscado do item
