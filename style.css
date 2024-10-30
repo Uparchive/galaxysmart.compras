@@ -1259,7 +1259,7 @@ input.purchased-input {
 
 .logout-button {
     position: fixed;
-    top: 20px;
+    top: 60px;  /* Ajuste a altura para posicionar o botão um pouco abaixo */
     right: 20px;
     padding: 10px 20px;
     background: linear-gradient(135deg, #ff8c42, #ff6b00);
@@ -1283,4 +1283,3 @@ input.purchased-input {
 .logout-button:active {
     transform: scale(0.95);
 }
-
