@@ -213,13 +213,21 @@
     <h2>Gerenciador de Seções e Produtos</h2>
 
     <!-- Formulário de Login/Cadastro -->
-    <div id="auth-container">
+<div id="auth-container" class="auth-container">
+    <h3>Acessar Conta</h3>
+    <div class="input-group">
+        <i class="fas fa-envelope"></i>
         <input type="email" id="email" placeholder="Email" />
+    </div>
+    <div class="input-group">
+        <i class="fas fa-lock"></i>
         <input type="password" id="password" placeholder="Senha" />
+    </div>
+    <div class="button-group-auth">
         <button onclick="signUp()">Cadastrar</button>
         <button onclick="signIn()">Login</button>
     </div>
-    <button id="logout-btn" onclick="signOut()" style="display: none;">Logout</button>
+</div>
 
     <!-- Conteúdo Principal - Gerenciador de Seções e Produtos -->
     <div id="main-content" style="display: none;">
