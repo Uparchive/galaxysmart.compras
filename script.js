@@ -21,33 +21,57 @@ let sections = JSON.parse(localStorage.getItem('sections')) || [];
 
 // Função de cadastro de usuário
 function signUp() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
 
+    // Validação de email simples com regex
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    if (!email || !password) {
+        alert('Por favor, preencha todos os campos.');
+        return;
+    }
+
+    if (!emailRegex.test(email)) {
+        alert('Por favor, insira um email válido.');
+        return;
+    }
+
+    // Cadastrar usuário com Firebase
     firebase.auth().createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
+            // Sucesso no cadastro
+            const user = userCredential.user;
             alert('Usuário cadastrado com sucesso!');
-            document.getElementById('auth-container').style.display = 'none';
-            document.getElementById('logout-btn').style.display = 'block';
+            console.log('Usuário cadastrado:', user);
         })
         .catch((error) => {
-            alert(`Erro ao cadastrar: ${error.message}`);
+            // Erro ao cadastrar
+            alert('Erro ao cadastrar: ' + error.message);
         });
 }
 
 // Função de login de usuário
 function signIn() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
 
+    if (!email || !password) {
+        alert('Por favor, preencha todos os campos.');
+        return;
+    }
+
+    // Login com Firebase
     firebase.auth().signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
-            alert('Login bem-sucedido!');
-            document.getElementById('auth-container').style.display = 'none';
-            document.getElementById('logout-btn').style.display = 'block';
+            // Sucesso no login
+            const user = userCredential.user;
+            alert('Login realizado com sucesso!');
+            console.log('Usuário logado:', user);
         })
         .catch((error) => {
-            alert(`Erro ao fazer login: ${error.message}`);
+            // Erro no login
+            alert('Erro ao fazer login: ' + error.message);
         });
 }
 
