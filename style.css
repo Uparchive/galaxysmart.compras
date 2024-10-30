@@ -973,3 +973,180 @@ input[type="number"]:focus {
         font-size: 10px;
     }
 }
+
+/* ========================================= */
+/* ======= Estilo Melhorado de Botões ======= */
+/* ========================================= */
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 15px;
+    padding: 10px;
+}
+
+.item-main-info {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ff8c42;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espaçamento entre o nome do item e a loja */
+    text-transform: uppercase;
+    flex: 1;
+}
+
+.item-details {
+    display: flex;
+    gap: 15px; /* Espaçamento entre os detalhes */
+    align-items: center;
+    flex-wrap: nowrap;
+    font-size: 14px;
+    color: #b0b0b0;
+    flex: 1;
+    justify-content: flex-start;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.item-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 0 0 auto; /* Evita que os botões cresçam mais do que o necessário */
+}
+
+.button-group-custom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+    width: fit-content;
+}
+
+.quantity-button {
+    background: linear-gradient(135deg, #ff8c42, #ff6b00);
+    border: none;
+    color: #1c1c2b;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: bold;
+    width: 35px;
+    height: 35px;
+    transition: background 0.3s ease, transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
+
+.quantity-button:hover {
+    background: linear-gradient(135deg, #ff6b00, #ff8c42);
+    transform: scale(1.1);
+}
+
+.quantity-button:active {
+    transform: scale(0.95);
+}
+
+.edit-button,
+.mark-button,
+.unmark-button,
+.discard-button {
+    font-size: 18px;
+    padding: 5px;
+    background: none;
+    color: #ff8c42;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-button:hover,
+.mark-button:hover,
+.unmark-button:hover,
+.discard-button:hover {
+    color: #ff6b00;
+    transform: scale(1.1);
+}
+
+button {
+    min-width: 40px;
+}
+
+/* Responsividade para listas menores */
+@media (max-width: 768px) {
+    .item-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .item-main-info,
+    .item-details {
+        font-size: 14px;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .item-buttons {
+        gap: 8px;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .button-group-custom {
+        justify-content: space-around;
+        width: 100%;
+    }
+
+    .quantity-button,
+    .edit-button,
+    .mark-button,
+    .unmark-button,
+    .discard-button {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .item-header {
+        flex-direction: column;
+        gap: 5px;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .item-main-info,
+    .item-details {
+        font-size: 12px;
+        gap: 5px;
+    }
+
+    .item-buttons {
+        flex-wrap: wrap;
+        gap: 5px;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .quantity-button,
+    .edit-button,
+    .mark-button,
+    .unmark-button,
+    .discard-button {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+    }
+}
+
