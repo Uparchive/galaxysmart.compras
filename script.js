@@ -55,7 +55,6 @@ function signUp() {
         });
 }
 
-// Função de login de usuário
 function signIn() {
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
@@ -65,26 +64,16 @@ function signIn() {
         return;
     }
 
-    // Login com Firebase
     firebase.auth().signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
-            // Sucesso no login
-            const user = userCredential.user;
             alert('Login realizado com sucesso!');
-            console.log('Usuário logado:', user);
             
-            // Redirecionar para a página principal do WebApp após login bem-sucedido
-            window.location.href = 'webapp.html'; // Substitua 'webapp.html' pelo caminho da página principal do seu WebApp
+            // Ocultar formulário de login e mostrar conteúdo principal
+            document.getElementById('auth-container').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
         })
         .catch((error) => {
-            // Erro no login
-            if (error.code === 'auth/user-not-found') {
-                alert('Usuário não encontrado. Por favor, faça o cadastro.');
-            } else if (error.code === 'auth/wrong-password') {
-                alert('Senha incorreta. Tente novamente.');
-            } else {
-                alert('Erro ao fazer login: ' + error.message);
-            }
+            alert('Erro ao fazer login: ' + error.message);
         });
 }
 
