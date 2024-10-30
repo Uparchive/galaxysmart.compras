@@ -743,50 +743,63 @@ function copyReportToClipboard() {
     alert('Relatório copiado para a área de transferência!');
 }
 
-// Função para salvar o estado atual online (Firebase)
+// Salvar estado online no Firebase
 function saveOnline() {
-    const saveName = prompt("Nome para o salvamento:");
-    if (saveName && saveName.trim() !== '') {
-        const data = { sections, purchasedItems, timestamp: Date.now(), name: saveName.trim() };
-        const newDataKey = database.ref().child('savedStates').push().key;
-        const updates = {};
-        updates['/savedStates/' + newDataKey] = data;
-        database.ref().update(updates).then(() => {
-            alert('Estado salvo online com sucesso!');
-            loadSavedStates(); // Atualiza a lista de salvamentos
-        }).catch(error => {
-            alert('Erro ao salvar online: ' + error.message);
-        });
+    const user = firebase.auth().currentUser;
+
+    if (user) {
+        const saveName = prompt("Nome para o salvamento:");
+        if (saveName && saveName.trim() !== '') {
+            const data = {
+                sections: sections,
+                purchasedItems: purchasedItems,
+                timestamp: Date.now(),
+                name: saveName.trim()
+            };
+            const userId = user.uid;  // Pegando o UID do usuário
+            const newDataKey = firebase.database().ref().child('savedStates').child(userId).push().key;
+
+            const updates = {};
+            updates[`/savedStates/${userId}/${newDataKey}`] = data;
+
+            firebase.database().ref().update(updates)
+                .then(() => {
+                    alert('Estado salvo online com sucesso!');
+                    loadSavedStates(); // Atualiza a lista de salvamentos
+                })
+                .catch((error) => {
+                    alert('Erro ao salvar online: ' + error.message);
+                });
+        }
     } else {
-        alert('Operação cancelada ou nome inválido.');
+        alert("Você precisa estar logado para salvar online.");
     }
 }
 
-// Função para carregar os estados salvos online
+// Carregar os estados salvos do usuário
 function loadSavedStates() {
-    const savedCardsContainer = document.getElementById('savedCards');
-    if (!savedCardsContainer) return;
-    savedCardsContainer.innerHTML = '<p>Carregando salvamentos...</p>';
+    const user = firebase.auth().currentUser;
 
-    database.ref('/savedStates/').once('value').then(function(snapshot) {
-        const savedStates = [];
-        snapshot.forEach(function(childSnapshot) {
-            const savedState = childSnapshot.val();
-            savedState.key = childSnapshot.key;
-            savedStates.push(savedState);
-        });
+    if (user) {
+        const userId = user.uid;  // Pegando o UID do usuário
 
-        // Exibir os mais recentes no topo
-        savedStates.sort((a, b) => b.timestamp - a.timestamp);
-
-        savedCardsContainer.innerHTML = '';
-        savedStates.forEach(savedState => {
-            addSavedCardToDOM(savedState);
-        });
-    }).catch(function(error) {
-        savedCardsContainer.innerHTML = '<p>Erro ao carregar salvamentos.</p>';
-        console.error('Erro ao carregar salvamentos:', error);
-    });
+        firebase.database().ref(`/savedStates/${userId}`).once('value')
+            .then((snapshot) => {
+                const data = snapshot.val();
+                // Processa e exibe os dados do usuário
+                if (data) {
+                    // Código para atualizar a interface com os dados carregados
+                    console.log("Dados carregados: ", data);
+                } else {
+                    alert("Nenhum salvamento encontrado para este usuário.");
+                }
+            })
+            .catch((error) => {
+                alert('Erro ao carregar salvamentos: ' + error.message);
+            });
+    } else {
+        alert("Você precisa estar logado para carregar os salvamentos.");
+    }
 }
 
 // Função para adicionar um cartão de salvamento ao DOM
