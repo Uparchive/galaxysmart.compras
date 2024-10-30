@@ -202,7 +202,7 @@ button:disabled {
     font-size: 16px;
 }
 
-/* Botões específicos */
+/* Botões Específicos */
 .quantity-button {
     background: linear-gradient(135deg, #ff8c42, #ff6b00);
     color: #1c1c2b;
@@ -252,28 +252,29 @@ input[type="number"]:focus {
     box-shadow: 0 5px 10px rgba(255, 140, 66, 0.4);
 }
 
-.search-bar {
-    padding: 10px 40px 10px 10px;
-    border-radius: 8px;
-    border: 1px solid #ff8c42;
-    background-color: #2b2b3c;
-    color: #fff;
-    font-size: 16px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.search-bar::placeholder {
-    color: #b0b0b0;
-    opacity: 0.8;
-}
-
 .search-container {
     position: relative;
     width: 100%;
     display: flex;
     align-items: center;
     margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.search-bar {
+    flex: 1;
+    padding: 10px 40px 10px 10px;
+    border-radius: 8px;
+    border: 1px solid #ff8c42;
+    background-color: #2b2b3c;
+    color: #fff;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.search-bar::placeholder {
+    color: #b0b0b0;
+    opacity: 0.8;
 }
 
 .filter-icons {
@@ -303,25 +304,6 @@ input[type="number"]:focus {
 /* ======== Componentes ====================== */
 /* ========================================= */
 
-/* Seções */
-.section {
-    background-color: #1b2330;
-    padding: 25px;
-    margin-bottom: 30px;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(255, 140, 66, 0.2);
-}
-
-.section-buttons {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 10px;
-}
-
-.section-buttons button {
-    margin-bottom: 15px;
-}
-
 /* Adicionar Itens/Seções */
 .add-item,
 .add-section {
@@ -344,7 +326,115 @@ input[type="number"]:focus {
     border-radius: 8px;
 }
 
-/* Cards Salvos */
+/* Botões Principais */
+.button-group-main {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.button-group-main button {
+    flex: 1 1 calc(25% - 10px);
+    min-width: 100px;
+    padding: 10px;
+    background: linear-gradient(135deg, #ff8c42, #ff6b00);
+    color: #1c1c2b;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.button-group-main button:hover {
+    background: linear-gradient(135deg, #ff6b00, #ff8c42);
+    transform: scale(1.05);
+}
+
+.button-group-main button:active {
+    transform: scale(0.95);
+}
+
+/* Seções */
+.section {
+    background-color: #1b2330;
+    padding: 25px;
+    margin-bottom: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(255, 140, 66, 0.2);
+}
+
+.section-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.section-buttons button {
+    flex: 1 1 calc(33.33% - 10px);
+    min-width: 100px;
+    padding: 10px;
+    background: linear-gradient(135deg, #ff8c42, #ff6b00);
+    color: #1c1c2b;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.section-buttons button:hover {
+    background: linear-gradient(135deg, #ff6b00, #ff8c42);
+    transform: scale(1.05);
+}
+
+.section-buttons button:active {
+    transform: scale(0.95);
+}
+
+/* Adicionar Itens às Seções */
+#sections ul {
+    padding-left: 0;
+    margin: 0;
+}
+
+/* Relatório e Download */
+#report h2,
+#report h3 {
+    color: #ff8c42;
+}
+
+#downloadSection {
+    display: none;
+    text-align: center;
+    margin-top: 20px;
+}
+
+#downloadSection button {
+    padding: 10px;
+    background: linear-gradient(135deg, #ff8c42, #ff6b00);
+    color: #1c1c2b;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+#downloadSection button:hover {
+    background: linear-gradient(135deg, #ff6b00, #ff8c42);
+    transform: scale(1.05);
+}
+
+#downloadSection button:active {
+    transform: scale(0.95);
+}
+
+/* ========================================= */
+/* ======== Cards Salvos ===================== */
+/* ========================================= */
 .saved-cards {
     margin-top: 25px;
     display: grid;
@@ -405,7 +495,9 @@ input[type="number"]:focus {
     background: linear-gradient(135deg, #ff6b00, #ff8c42);
 }
 
-/* Edit Form */
+/* ========================================= */
+/* ======== Formulários de Edição ============ */
+/* ========================================= */
 .edit-form {
     display: flex;
     flex-direction: column;
@@ -449,7 +541,9 @@ input[type="number"]:focus {
     transform: scale(0.95);
 }
 
-/* Scroll to Top Button */
+/* ========================================= */
+/* ======== Scroll to Top Button ============= */
+/* ========================================= */
 #scrollToTopBtn {
     position: fixed;
     bottom: 20px;
@@ -474,7 +568,9 @@ input[type="number"]:focus {
     transform: scale(0.95);
 }
 
-/* Report Button */
+/* ========================================= */
+/* ======== Report Button =================== */
+/* ========================================= */
 #report button {
     background: linear-gradient(135deg, #ff8c42, #ff6b00);
     color: #1c1c2b;
@@ -524,6 +620,11 @@ input[type="number"]:focus {
     /* Tipografia */
     h2 {
         font-size: 22px;
+    }
+
+    /* Esconder o separador em telas menores */
+    .item-separator {
+        display: none;
     }
 }
 
@@ -733,51 +834,3 @@ input[type="number"]:focus {
         padding: 15px;
     }
 }
-/* ========================================= */
-/* ======== Estilo do Container de Autenticação ======== */
-/* ========================================= */
-
-.auth-container {
-    max-width: 400px;
-    margin: 50px auto;
-    padding: 30px;
-    background: linear-gradient(135deg, #1c1c2b, #2b2b3c);
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(255, 140, 66, 0.3);
-    text-align: center;
-    color: #e0e0e0;
-}
-
-.auth-container h3 {
-    margin-bottom: 20px;
-    color: #ff8c42;
-    font-size: 24px;
-    text-transform: uppercase;
-}
-
-.input-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    background-color: #2b2b3c;
-    padding: 10px;
-    border: 1px solid #ff8c42;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.input-group i {
-    color: #ff8c42;
-    margin-right: 10px;
-    font-size: 18px;
-}
-
-.input-group input {
-    border: none;
-    background: none;
-    color: #fff;
-    font-size: 16px;
-    flex: 1;
-    outline: none;
-}
-
