@@ -213,21 +213,21 @@
     <h2>Gerenciador de Seções e Produtos</h2>
 
     <!-- Formulário de Login/Cadastro -->
-<div id="auth-container" class="auth-container">
-    <h3>Acessar Conta</h3>
-    <div class="input-group">
-        <i class="fas fa-envelope"></i>
-        <input type="email" id="email" placeholder="Email" />
+    <div id="auth-container" class="auth-container">
+        <h3>Acessar Conta</h3>
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" placeholder="Email" />
+        </div>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" placeholder="Senha" />
+        </div>
+        <div class="button-group-auth">
+            <button onclick="signUp()">Cadastrar</button>
+            <button onclick="signIn()">Login</button>
+        </div>
     </div>
-    <div class="input-group">
-        <i class="fas fa-lock"></i>
-        <input type="password" id="password" placeholder="Senha" />
-    </div>
-    <div class="button-group-auth">
-        <button onclick="signUp()">Cadastrar</button>
-        <button onclick="signIn()">Login</button>
-    </div>
-</div>
 
     <!-- Conteúdo Principal - Gerenciador de Seções e Produtos -->
     <div id="main-content" style="display: none;">
@@ -263,16 +263,15 @@
     <button id="scrollToTopBtn" onclick="scrollToTop()">⬆️ Topo</button>
 
     <!-- Scripts do Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-auth-compat.js"></script>
 
-<!-- Outras dependências -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.3.2/docx.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <!-- Outras dependências -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.3.2/docx.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 
-<!-- Seu script principal -->
-<script src="script.js"></script>
-    
+    <!-- Seu script principal -->
+    <script src="script.js"></script>
 </body>
 </html>
