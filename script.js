@@ -72,6 +72,9 @@ function signIn() {
             const user = userCredential.user;
             alert('Login realizado com sucesso!');
             console.log('Usuário logado:', user);
+            
+            // Redirecionar para a página principal do WebApp após login bem-sucedido
+            window.location.href = 'webapp.html'; // Substitua 'webapp.html' pelo caminho da página principal do seu WebApp
         })
         .catch((error) => {
             // Erro no login
