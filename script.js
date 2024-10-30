@@ -77,6 +77,16 @@ function signIn() {
         });
 }
 
+function logout() {
+    // Aqui você pode adicionar a lógica para fazer logout do usuário, como por exemplo:
+    firebase.auth().signOut().then(() => {
+        alert("Você foi desconectado!");
+        window.location.href = "login.html"; // Redirecionar para a página de login, por exemplo
+    }).catch((error) => {
+        console.error("Erro ao fazer logout:", error);
+    });
+}
+
 // Função para alternar o estado riscado do item
 function toggleRiscado(event, uniqueId) {
     const listItem = event.target.closest('li');
