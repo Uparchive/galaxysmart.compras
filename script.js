@@ -19,72 +19,11 @@ var database = firebase.database();
 let purchasedItems = JSON.parse(localStorage.getItem('purchasedItems')) || [];
 let sections = JSON.parse(localStorage.getItem('sections')) || [];
 
-// Função de cadastro de usuário
-function signUp() {
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
-
-    // Validação de email simples com regex
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-    if (!email || !password) {
-        alert('Por favor, preencha todos os campos.');
-        return;
-    }
-
-    if (!emailRegex.test(email)) {
-        alert('Por favor, insira um email válido.');
-        return;
-    }
-
-    // Cadastrar usuário com Firebase
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            // Sucesso no cadastro
-            const user = userCredential.user;
-            alert('Usuário cadastrado com sucesso!');
-            console.log('Usuário cadastrado:', user);
-        })
-        .catch((error) => {
-            // Erro ao cadastrar
-            if (error.code === 'auth/email-already-in-use') {
-                alert('O email já está em uso. Por favor, faça login.');
-            } else {
-                alert('Erro ao cadastrar: ' + error.message);
-            }
-        });
-}
-
-function signIn() {
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
-
-    if (!email || !password) {
-        alert('Por favor, preencha todos os campos.');
-        return;
-    }
-
-    firebase.auth().signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            alert('Login realizado com sucesso!');
-            
-            // Ocultar formulário de login e mostrar conteúdo principal
-            document.getElementById('auth-container').style.display = 'none';
-            document.getElementById('main-content').style.display = 'block';
-        })
-        .catch((error) => {
-            alert('Erro ao fazer login: ' + error.message);
-        });
-}
-
-function logout() {
-    // Aqui você pode adicionar a lógica para fazer logout do usuário, como por exemplo:
-    firebase.auth().signOut().then(() => {
-        alert("Você foi desconectado!");
-        window.location.href = "login.html"; // Redirecionar para a página de login, por exemplo
-    }).catch((error) => {
-        console.error("Erro ao fazer logout:", error);
-    });
+// Função para salvar o estado no localStorage
+function saveState() {
+    localStorage.setItem('purchasedItems', JSON.stringify(purchasedItems));
+    localStorage.setItem('sections', JSON.stringify(sections));
+    updateTotalItemCount(); // Atualiza a contagem total sempre que o estado é salvo
 }
 
 // Função para alternar o estado riscado do item
@@ -748,63 +687,50 @@ function copyReportToClipboard() {
     alert('Relatório copiado para a área de transferência!');
 }
 
-// Salvar estado online no Firebase
+// Função para salvar o estado atual online (Firebase)
 function saveOnline() {
-    const user = firebase.auth().currentUser;
-
-    if (user) {
-        const saveName = prompt("Nome para o salvamento:");
-        if (saveName && saveName.trim() !== '') {
-            const data = {
-                sections: sections,
-                purchasedItems: purchasedItems,
-                timestamp: Date.now(),
-                name: saveName.trim()
-            };
-            const userId = user.uid;  // Pegando o UID do usuário
-            const newDataKey = firebase.database().ref().child('savedStates').child(userId).push().key;
-
-            const updates = {};
-            updates[`/savedStates/${userId}/${newDataKey}`] = data;
-
-            firebase.database().ref().update(updates)
-                .then(() => {
-                    alert('Estado salvo online com sucesso!');
-                    loadSavedStates(); // Atualiza a lista de salvamentos
-                })
-                .catch((error) => {
-                    alert('Erro ao salvar online: ' + error.message);
-                });
-        }
+    const saveName = prompt("Nome para o salvamento:");
+    if (saveName && saveName.trim() !== '') {
+        const data = { sections, purchasedItems, timestamp: Date.now(), name: saveName.trim() };
+        const newDataKey = database.ref().child('savedStates').push().key;
+        const updates = {};
+        updates['/savedStates/' + newDataKey] = data;
+        database.ref().update(updates).then(() => {
+            alert('Estado salvo online com sucesso!');
+            loadSavedStates(); // Atualiza a lista de salvamentos
+        }).catch(error => {
+            alert('Erro ao salvar online: ' + error.message);
+        });
     } else {
-        alert("Você precisa estar logado para salvar online.");
+        alert('Operação cancelada ou nome inválido.');
     }
 }
 
-// Carregar os estados salvos do usuário
+// Função para carregar os estados salvos online
 function loadSavedStates() {
-    const user = firebase.auth().currentUser;
+    const savedCardsContainer = document.getElementById('savedCards');
+    if (!savedCardsContainer) return;
+    savedCardsContainer.innerHTML = '<p>Carregando salvamentos...</p>';
 
-    if (user) {
-        const userId = user.uid;  // Pegando o UID do usuário
+    database.ref('/savedStates/').once('value').then(function(snapshot) {
+        const savedStates = [];
+        snapshot.forEach(function(childSnapshot) {
+            const savedState = childSnapshot.val();
+            savedState.key = childSnapshot.key;
+            savedStates.push(savedState);
+        });
 
-        firebase.database().ref(`/savedStates/${userId}`).once('value')
-            .then((snapshot) => {
-                const data = snapshot.val();
-                // Processa e exibe os dados do usuário
-                if (data) {
-                    // Código para atualizar a interface com os dados carregados
-                    console.log("Dados carregados: ", data);
-                } else {
-                    alert("Nenhum salvamento encontrado para este usuário.");
-                }
-            })
-            .catch((error) => {
-                alert('Erro ao carregar salvamentos: ' + error.message);
-            });
-    } else {
-        alert("Você precisa estar logado para carregar os salvamentos.");
-    }
+        // Exibir os mais recentes no topo
+        savedStates.sort((a, b) => b.timestamp - a.timestamp);
+
+        savedCardsContainer.innerHTML = '';
+        savedStates.forEach(savedState => {
+            addSavedCardToDOM(savedState);
+        });
+    }).catch(function(error) {
+        savedCardsContainer.innerHTML = '<p>Erro ao carregar salvamentos.</p>';
+        console.error('Erro ao carregar salvamentos:', error);
+    });
 }
 
 // Função para adicionar um cartão de salvamento ao DOM
